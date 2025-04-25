@@ -6,18 +6,26 @@
 #include <pthread.h>        // threads POSIX
 #include <signal.h>         // gestion Ctrl+C
 #include <netinet/in.h>     // struct sockaddr_in
+#include <libpq-fe.h>
+#include <dotenv.h>
+
 
 #define PORT 8080
 #define MAX_CLIENTS 100
 
-int server_fd; // socket serveur global pour pouvoir le fermer proprement
+void create_user(char *buffer, int client_fd);
 
-int clients[MAX_CLIENTS];               // Tableau des sockets clients
-int nb_clients = 0;                     // Nombre actuel de clients connectés
-pthread_mutex_t clients_mutex = PTHREAD_MUTEX_INITIALIZER; // Mutex pour protéger l’accès
 
-// Gérer Ctrl+C pour fermer le socket proprement
+int server_fd; 
+
+
+int clients[MAX_CLIENTS];               
+int nb_clients = 0;                     
+pthread_mutex_t clients_mutex = PTHREAD_MUTEX_INITIALIZER; 
+
+
 void handle_sigint(int sig) {
+    (void)sig;
     printf("\n[Ctrl+C] Fermeture du serveur...\n");
     if (server_fd != -1) {
         close(server_fd);
@@ -28,8 +36,8 @@ void handle_sigint(int sig) {
 
 // Fonction qui gère la communication avec un client
 void *handle_client(void *arg) {
-    int client_fd = *(int *)arg;   // Récupérer la valeur passée (le socket du client)
-    free(arg);                     // Libérer la mémoire allouée dans main()
+    int client_fd = *(int *)arg;   
+    free(arg);                     
     char buffer[1024];
 
     pthread_mutex_lock(&clients_mutex);
@@ -63,11 +71,10 @@ void *handle_client(void *arg) {
         printf("Message reçu de %d : %s\n", client_fd, buffer);
 
         // Gestion des messages
-        if (strcmp(buffer, "exit") == 0) {
-            send(client_fd, "Déconnexion.\n", strlen("Déconnexion.\n"), 0);
-            break;
-        } else if (strcmp(buffer, "ping") == 0) {
-            send(client_fd, "pong\n", strlen("pong\n"), 0);
+        if (strncmp(buffer, "AUTH :", 6) == 0) {
+            create_user(buffer,client_fd);
+            continue;
+
         } else {    
                 pthread_mutex_lock(&clients_mutex);
 
@@ -149,7 +156,7 @@ int main() {
         // 6. Afficher IP + port
         char *ip = inet_ntoa(client_addr.sin_addr);
         int port = ntohs(client_addr.sin_port);
-        printf("🆕 Nouveau client connecté depuis %s:%d\n", ip, port);
+        printf("Nouveau client connecté depuis %s:%d\n", ip, port);
 
         // 7. Allouer dynamiquement le socket pour le thread
         int *pclient = malloc(sizeof(int));
@@ -176,3 +183,83 @@ int main() {
     close(server_fd); 
     return 0;
 }
+
+int check_email(char *email, PGconn *conn){
+
+    char check_query[256];
+    snprintf(check_query, sizeof(check_query),
+            "SELECT id FROM users WHERE email = '%s'",email);
+
+    PGresult *check_res = PQexec(conn, check_query);
+
+    if (PQresultStatus(check_res) != PGRES_TUPLES_OK) {
+        printf("Erreur lors de la vérification de l'email.\n");
+        PQclear(check_res);
+        return -1;
+    }
+    int exits = PQntuples(check_res) > 0;
+    PQclear(check_res);
+    return exits ? 1 : 0;
+}
+
+
+void create_user(char *buffer, int client_fd){
+
+    char *data = buffer + 6;
+    while (*data == ' ') data++;
+    char *saveptr;
+
+    char *username = strtok_r(data, "|", &saveptr);
+    char *email = strtok_r(NULL, "|", &saveptr);
+    char *password = strtok_r(NULL, "|", &saveptr);
+
+    if (!username || strlen(username) == 0 ||
+    !email || strlen(email) == 0 ||
+    !password || strlen(password) == 0) {
+
+    printf("Requête invalide : champs vides.\n");
+    send(client_fd, "AUTH:0", strlen("AUTH:0"), 0);
+    return;
+    }
+    env_load(".", false);
+
+    PGconn *conn = PQconnectdb("");
+    if (PQstatus(conn) != CONNECTION_OK) {
+        printf("Connexion à la base de données échouée.");
+        PQfinish(conn);
+        return;
+    }
+
+    int check = check_email(email, conn);
+
+    if (check == 1){
+        printf("Email existe déjà.\n");
+        send(client_fd, "AUTH:2", strlen("AUTH:2"),0);
+    } else if (check == -1) {
+        printf("Erreur lors de la vérification de l'email.\n");
+        send(client_fd, "AUTH:0", strlen("AUTH:0"), 0);
+        PQfinish(conn);
+        return;
+    }
+    else{
+    char query[512];
+    snprintf(query, sizeof(query),
+            "INSERT INTO users (username, email, password_hash) VALUES ('%s', '%s', '%s')",
+            username, email, password);
+
+    PGresult *res = PQexec(conn, query);
+
+    if (PQresultStatus(res) == PGRES_COMMAND_OK) {
+        printf("Inscription réussie pour %s\n", username);
+        send(client_fd, "AUTH:1", strlen("AUTH:1"),0);
+    } else {
+        printf("Requête invalide : champs vides.\n");
+        send(client_fd, "AUTH:3", strlen("AUTH:3"),0);
+    }
+
+    PQclear(res);
+}
+    PQfinish(conn);
+    return;
+}
+

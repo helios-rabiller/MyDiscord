@@ -1,0 +1,3 @@
+/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build/CMakeFiles/app.dir
+/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build/CMakeFiles/edit_cache.dir
+/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build/CMakeFiles/rebuild_cache.dir

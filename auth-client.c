@@ -1,6 +1,4 @@
 #include <gtk/gtk.h>
-#include <libpq-fe.h>
-#include <dotenv.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,15 +6,24 @@
 #include <pthread.h>
 #include <arpa/inet.h>
 #include <signal.h>
+#include <libpq-fe.h>
+#include <dotenv.h>
 
 #define PORT 8080
+int client_fd;
 
 GtkWidget *entry_username;
 GtkWidget *entry_password;
 GtkWidget *entry_email;
 
+static void on_alert_ok_clicked(GtkButton *button, gpointer user_data) {
+    GtkWindow *dialog = GTK_WINDOW(user_data);
+    gtk_window_destroy(dialog); 
+}
+
 void show_alert(GtkWindow *parent, const char *message) {
-    GtkWidget *dialog = gtk_window_new();
+
+    GtkWidget *dialog = gtk_application_window_new(gtk_window_get_application(parent));
     gtk_window_set_title(GTK_WINDOW(dialog), "Alerte");
     gtk_window_set_transient_for(GTK_WINDOW(dialog), parent);
     gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
@@ -38,9 +45,11 @@ void show_alert(GtkWindow *parent, const char *message) {
     gtk_box_append(GTK_BOX(box), button);
 
     gtk_window_set_child(GTK_WINDOW(dialog), box);
-    gtk_widget_set_visible(dialog, TRUE);
+    gtk_window_present(GTK_WINDOW(dialog));
 
-    g_signal_connect(button, "clicked", G_CALLBACK(gtk_window_destroy), dialog);
+    g_signal_connect(button, "clicked", G_CALLBACK(on_alert_ok_clicked), dialog);
+
+    return;
 }
 
 void on_login_clicked(GtkButton *button, gpointer user_data) {
@@ -48,6 +57,8 @@ void on_login_clicked(GtkButton *button, gpointer user_data) {
     const char *username = gtk_editable_get_text(GTK_EDITABLE(entry_username));
     const char *password = gtk_editable_get_text(GTK_EDITABLE(entry_password));
 
+    env_load(".", false);
+    
     // Connexion à la base (libpq lit automatiquement les variables d'env)
     PGconn *conn = PQconnectdb("");
     if (PQstatus(conn) != CONNECTION_OK) {
@@ -71,6 +82,7 @@ void on_login_clicked(GtkButton *button, gpointer user_data) {
 
     PQclear(res);
     PQfinish(conn);
+    return;
 }
 
 void on_register_clicked(GtkButton *button, gpointer user_data) {
@@ -78,29 +90,34 @@ void on_register_clicked(GtkButton *button, gpointer user_data) {
     const char *username = gtk_editable_get_text(GTK_EDITABLE(entry_username));
     const char *email = gtk_editable_get_text(GTK_EDITABLE(entry_email));
     const char *password = gtk_editable_get_text(GTK_EDITABLE(entry_password));
-
-    PGconn *conn = PQconnectdb("");
-    if (PQstatus(conn) != CONNECTION_OK) {
-        show_alert(window, "Connexion à la base de données échouée.");
-        PQfinish(conn);
+    
+    if (strlen(username) == 0 || strlen(email) == 0 || strlen(password) == 0) {
+        show_alert(window, "Tous les champs sont obligatoires.");
         return;
     }
+    
+    char buffer[512];
+    snprintf(buffer, sizeof(buffer), "AUTH : %s|%s|%s", username, email, password);
+    send(client_fd, buffer, strlen(buffer), 0);
 
-    char query[512];
-    snprintf(query, sizeof(query),
-             "INSERT INTO users (username, email, password_hash) VALUES ('%s', '%s', '%s')",
-             username, email, password);
 
-    PGresult *res = PQexec(conn, query);
+    char auth_status[8];
 
-    if (PQresultStatus(res) == PGRES_COMMAND_OK) {
+    memset(auth_status,0,sizeof(auth_status));
+
+    int bytes_read = read(client_fd, auth_status, sizeof(auth_status) - 1);
+    auth_status[bytes_read] = '\0';  
+
+    if (strcmp(auth_status,"AUTH:1") == 0) {
         show_alert(window, "Inscription réussie !");
-    } else {
-        show_alert(window, "Erreur lors de l'inscription. L'email est peut-être déjà utilisé.");
+    } else if (strcmp(auth_status,"AUTH:0") == 0){
+        show_alert(window, "Erreur lors de l'inscription. Erreur inconnue.");
+    } else if (strcmp(auth_status,"AUTH:3") == 0) {
+        show_alert(window, "Erreur lors de l'inscription. Champs vide.");
+    } else if (strcmp(auth_status,"AUTH:2") == 0) {
+        show_alert(window, "Erreur lors de l'inscription. L'email est déjà utilisé.");
     }
-
-    PQclear(res);
-    PQfinish(conn);
+    return;
 }
 
 static void activate(GtkApplication *app, gpointer user_data) {
@@ -140,35 +157,29 @@ static void activate(GtkApplication *app, gpointer user_data) {
     g_signal_connect(btn_register, "clicked", G_CALLBACK(on_register_clicked), window);
 
     gtk_window_present(GTK_WINDOW(window));
+    return;
 }
 
 int main(int argc, char **argv) {
 
-    env_load(".", false);
-
-    int client_fd;
     struct sockaddr_in server_addr;
-    // signal(SIGINT, handle_sigint);
 
-    // 1. Créer le socket
     client_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (client_fd == -1) {
         perror("Erreur socket");
         exit(EXIT_FAILURE);
     }
 
-    // 2. Définir adresse du serveur
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(PORT);
     inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr);
 
-    // 3. Connexion
     if (connect(client_fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
         perror("Erreur connexion");
         exit(EXIT_FAILURE);
     }
 
-    printf("✅ Connecté au serveur sur le port %d\n", PORT);
+    printf("Connecté au serveur sur le port %d\n", PORT);
 
     
 
@@ -179,5 +190,6 @@ int main(int argc, char **argv) {
     g_object_unref(app);
     
     close(client_fd);
+    printf("déconnecté\n");
     return status;
 }
