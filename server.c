@@ -14,7 +14,7 @@
 #define MAX_CLIENTS 100
 
 void create_user(char *buffer, int client_fd);
-
+void connect_auth(char *buffer, int client_fd);
 
 int server_fd; 
 
@@ -74,8 +74,13 @@ void *handle_client(void *arg) {
         if (strncmp(buffer, "AUTH :", 6) == 0) {
             create_user(buffer,client_fd);
             continue;
+        } 
+        else if (strncmp(buffer, "CONN :", 6) == 0){
+            connect_auth(buffer,client_fd);
+            continue;
+        }
 
-        } else {    
+         else {    
                 pthread_mutex_lock(&clients_mutex);
 
                 for (int i = 0; i < MAX_CLIENTS; i++) {
@@ -242,13 +247,19 @@ void create_user(char *buffer, int client_fd){
         return;
     }
     else{
-    char query[512];
-    snprintf(query, sizeof(query),
-            "INSERT INTO users (username, email, password_hash) VALUES ('%s', '%s', '%s')",
-            username, email, password);
 
-    PGresult *res = PQexec(conn, query);
-
+        PGresult *res = PQexecParams(
+            conn,
+            "INSERT INTO users (username, email, password_hash) "
+            "VALUES ($1, $2, crypt($3, gen_salt('bf')))",
+            3,
+            NULL,
+            (const char *[]) { username, email, password },
+            NULL,
+            NULL,
+            0
+        );
+        
     if (PQresultStatus(res) == PGRES_COMMAND_OK) {
         printf("Inscription réussie pour %s\n", username);
         send(client_fd, "AUTH:1", strlen("AUTH:1"),0);
@@ -263,3 +274,56 @@ void create_user(char *buffer, int client_fd){
     return;
 }
 
+void connect_auth(char *buffer, int client_fd){
+
+
+    char *data = buffer + 6;
+    while (*data == ' ') data++;
+    char *saveptr;
+
+    char *username = strtok_r(data, "|", &saveptr);
+    char *password = strtok_r(NULL, "|", &saveptr);
+
+    if (!username || strlen(username) == 0 ||
+    !password || strlen(password) == 0) {
+
+    printf("Requête invalide : champs vides.\n");
+    send(client_fd, "CONN:0", strlen("CONN:0"), 0);
+    return;
+    }
+
+    env_load(".", false);
+    
+    PGconn *conn = PQconnectdb("");
+    if (PQstatus(conn) != CONNECTION_OK) {
+        fprintf(stderr, "Erreur : %s\n", PQerrorMessage(conn));
+        PQfinish(conn);
+        return;
+    }
+    
+    PGresult *res = PQexecParams(
+        conn,
+        "SELECT id FROM users WHERE username = $1 AND password_hash = crypt($2, password_hash)",
+        2,
+        NULL,
+        (const char *[]) { username, password },
+        NULL,
+        NULL,
+        0
+    );    
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        printf("Erreur dans la requête SQL.\n");
+        send(client_fd, "CONN:0", strlen("CONN:0"), 0);
+    } else if (PQntuples(res) == 1) {
+        printf("Connexion réussie pour %s\n", username);
+        send(client_fd, "CONN:1", strlen("CONN:1"), 0);
+    } else {
+        printf("Identifiants incorrects pour %s\n", username);
+        send(client_fd, "CONN:2", strlen("CONN:2"), 0);
+    }
+    
+
+    PQclear(res);
+    PQfinish(conn);
+}

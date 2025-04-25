@@ -3,6 +3,7 @@
         "socket.h": "c",
         "in.h": "c",
         "dotenv.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "cstdlib": "c"
     }
 }

@@ -1,33 +1,34 @@
 cmake_minimum_required(VERSION 3.10)
-project(MyDiscordApp C)
+project(GtkChatApp C)
 
-set(CMAKE_C_STANDARD 17)
+set(CMAKE_C_STANDARD 11)
 
-# Trouve GTK4
+# Recherches GTK4
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(GTK4 REQUIRED gtk4)
+pkg_check_modules(GTK REQUIRED gtk4)
 
-# Ajoute les includes manuellement
+# Inclure les headers
 include_directories(
-    ${GTK4_INCLUDE_DIRS}
+    ${GTK_INCLUDE_DIRS}
+    ${CMAKE_SOURCE_DIR}/include        
     /usr/include/postgresql
-    /usr/include # pour dotenv.h
+    /usr/local/include
 )
 
-link_directories(
-    ${GTK4_LIBRARY_DIRS}
-    /usr/lib # pour libpq et libdotenv
+# Ajouter les options de compilation
+add_definitions(${GTK_CFLAGS_OTHER})
+
+# Ajout des fichiers source
+add_executable(app
+    src/main.c
+    src/auth.c
+    src/chat.c
 )
 
-# Supprime les warnings de pkg-config
-add_definitions(${GTK4_CFLAGS_OTHER})
-
-# Crée l'exécutable
-add_executable(app auth-client.c)
-
-# Lien avec les bibliothèques
+# Lier les bibliothèques
 target_link_libraries(app
-    ${GTK4_LIBRARIES}
+    ${GTK_LIBRARIES}
     pq
     dotenv
+    pthread
 )

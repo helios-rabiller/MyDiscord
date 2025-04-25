@@ -69,31 +69,63 @@ include CMakeFiles/app.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/app.dir/flags.make
 
-CMakeFiles/app.dir/auth-client.c.o: CMakeFiles/app.dir/flags.make
-CMakeFiles/app.dir/auth-client.c.o: ../auth-client.c
-CMakeFiles/app.dir/auth-client.c.o: CMakeFiles/app.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/app.dir/auth-client.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/app.dir/auth-client.c.o -MF CMakeFiles/app.dir/auth-client.c.o.d -o CMakeFiles/app.dir/auth-client.c.o -c /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/auth-client.c
+CMakeFiles/app.dir/src/main.c.o: CMakeFiles/app.dir/flags.make
+CMakeFiles/app.dir/src/main.c.o: ../src/main.c
+CMakeFiles/app.dir/src/main.c.o: CMakeFiles/app.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/app.dir/src/main.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/app.dir/src/main.c.o -MF CMakeFiles/app.dir/src/main.c.o.d -o CMakeFiles/app.dir/src/main.c.o -c /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/main.c
 
-CMakeFiles/app.dir/auth-client.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/app.dir/auth-client.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/auth-client.c > CMakeFiles/app.dir/auth-client.c.i
+CMakeFiles/app.dir/src/main.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/app.dir/src/main.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/main.c > CMakeFiles/app.dir/src/main.c.i
 
-CMakeFiles/app.dir/auth-client.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/app.dir/auth-client.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/auth-client.c -o CMakeFiles/app.dir/auth-client.c.s
+CMakeFiles/app.dir/src/main.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/app.dir/src/main.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/main.c -o CMakeFiles/app.dir/src/main.c.s
+
+CMakeFiles/app.dir/src/auth.c.o: CMakeFiles/app.dir/flags.make
+CMakeFiles/app.dir/src/auth.c.o: ../src/auth.c
+CMakeFiles/app.dir/src/auth.c.o: CMakeFiles/app.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/app.dir/src/auth.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/app.dir/src/auth.c.o -MF CMakeFiles/app.dir/src/auth.c.o.d -o CMakeFiles/app.dir/src/auth.c.o -c /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/auth.c
+
+CMakeFiles/app.dir/src/auth.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/app.dir/src/auth.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/auth.c > CMakeFiles/app.dir/src/auth.c.i
+
+CMakeFiles/app.dir/src/auth.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/app.dir/src/auth.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/auth.c -o CMakeFiles/app.dir/src/auth.c.s
+
+CMakeFiles/app.dir/src/chat.c.o: CMakeFiles/app.dir/flags.make
+CMakeFiles/app.dir/src/chat.c.o: ../src/chat.c
+CMakeFiles/app.dir/src/chat.c.o: CMakeFiles/app.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/app.dir/src/chat.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/app.dir/src/chat.c.o -MF CMakeFiles/app.dir/src/chat.c.o.d -o CMakeFiles/app.dir/src/chat.c.o -c /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/chat.c
+
+CMakeFiles/app.dir/src/chat.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/app.dir/src/chat.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/chat.c > CMakeFiles/app.dir/src/chat.c.i
+
+CMakeFiles/app.dir/src/chat.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/app.dir/src/chat.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/chat.c -o CMakeFiles/app.dir/src/chat.c.s
 
 # Object files for target app
 app_OBJECTS = \
-"CMakeFiles/app.dir/auth-client.c.o"
+"CMakeFiles/app.dir/src/main.c.o" \
+"CMakeFiles/app.dir/src/auth.c.o" \
+"CMakeFiles/app.dir/src/chat.c.o"
 
 # External object files for target app
 app_EXTERNAL_OBJECTS =
 
-app: CMakeFiles/app.dir/auth-client.c.o
+app: CMakeFiles/app.dir/src/main.c.o
+app: CMakeFiles/app.dir/src/auth.c.o
+app: CMakeFiles/app.dir/src/chat.c.o
 app: CMakeFiles/app.dir/build.make
 app: CMakeFiles/app.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C executable app"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking C executable app"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/app.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

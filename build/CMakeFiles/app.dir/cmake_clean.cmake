@@ -1,6 +1,10 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/app.dir/auth-client.c.o"
-  "CMakeFiles/app.dir/auth-client.c.o.d"
+  "CMakeFiles/app.dir/src/auth.c.o"
+  "CMakeFiles/app.dir/src/auth.c.o.d"
+  "CMakeFiles/app.dir/src/chat.c.o"
+  "CMakeFiles/app.dir/src/chat.c.o.d"
+  "CMakeFiles/app.dir/src/main.c.o"
+  "CMakeFiles/app.dir/src/main.c.o.d"
   "app"
   "app.pdb"
 )

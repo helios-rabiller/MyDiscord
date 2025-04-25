@@ -129,29 +129,77 @@ app/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/build
 .PHONY : app/fast
 
-auth-client.o: auth-client.c.o
-.PHONY : auth-client.o
+src/auth.o: src/auth.c.o
+.PHONY : src/auth.o
 
 # target to build an object file
-auth-client.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/auth-client.c.o
-.PHONY : auth-client.c.o
+src/auth.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/auth.c.o
+.PHONY : src/auth.c.o
 
-auth-client.i: auth-client.c.i
-.PHONY : auth-client.i
+src/auth.i: src/auth.c.i
+.PHONY : src/auth.i
 
 # target to preprocess a source file
-auth-client.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/auth-client.c.i
-.PHONY : auth-client.c.i
+src/auth.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/auth.c.i
+.PHONY : src/auth.c.i
 
-auth-client.s: auth-client.c.s
-.PHONY : auth-client.s
+src/auth.s: src/auth.c.s
+.PHONY : src/auth.s
 
 # target to generate assembly for a file
-auth-client.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/auth-client.c.s
-.PHONY : auth-client.c.s
+src/auth.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/auth.c.s
+.PHONY : src/auth.c.s
+
+src/chat.o: src/chat.c.o
+.PHONY : src/chat.o
+
+# target to build an object file
+src/chat.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/chat.c.o
+.PHONY : src/chat.c.o
+
+src/chat.i: src/chat.c.i
+.PHONY : src/chat.i
+
+# target to preprocess a source file
+src/chat.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/chat.c.i
+.PHONY : src/chat.c.i
+
+src/chat.s: src/chat.c.s
+.PHONY : src/chat.s
+
+# target to generate assembly for a file
+src/chat.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/chat.c.s
+.PHONY : src/chat.c.s
+
+src/main.o: src/main.c.o
+.PHONY : src/main.o
+
+# target to build an object file
+src/main.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/main.c.o
+.PHONY : src/main.c.o
+
+src/main.i: src/main.c.i
+.PHONY : src/main.i
+
+# target to preprocess a source file
+src/main.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/main.c.i
+.PHONY : src/main.c.i
+
+src/main.s: src/main.c.s
+.PHONY : src/main.s
+
+# target to generate assembly for a file
+src/main.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/main.c.s
+.PHONY : src/main.c.s
 
 # Help Target
 help:
@@ -162,9 +210,15 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... app"
-	@echo "... auth-client.o"
-	@echo "... auth-client.i"
-	@echo "... auth-client.s"
+	@echo "... src/auth.o"
+	@echo "... src/auth.i"
+	@echo "... src/auth.s"
+	@echo "... src/chat.o"
+	@echo "... src/chat.i"
+	@echo "... src/chat.s"
+	@echo "... src/main.o"
+	@echo "... src/main.i"
+	@echo "... src/main.s"
 .PHONY : help
 
 

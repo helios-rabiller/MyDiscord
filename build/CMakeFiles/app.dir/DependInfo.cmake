@@ -8,7 +8,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/auth-client.c" "CMakeFiles/app.dir/auth-client.c.o" "gcc" "CMakeFiles/app.dir/auth-client.c.o.d"
+  "/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/auth.c" "CMakeFiles/app.dir/src/auth.c.o" "gcc" "CMakeFiles/app.dir/src/auth.c.o.d"
+  "/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/chat.c" "CMakeFiles/app.dir/src/chat.c.o" "gcc" "CMakeFiles/app.dir/src/chat.c.o.d"
+  "/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/main.c" "CMakeFiles/app.dir/src/main.c.o" "gcc" "CMakeFiles/app.dir/src/main.c.o.d"
   )
 
 # Targets to which this target links.
