@@ -4,6 +4,8 @@
         "in.h": "c",
         "dotenv.h": "c",
         "string.h": "c",
-        "cstdlib": "c"
+        "cstdlib": "c",
+        "unistd.h": "c",
+        "app_context.h": "c"
     }
 }

@@ -9,6 +9,9 @@
 #include <libpq-fe.h>
 #include <dotenv.h>
 
+#include "server_auth.h"
+#include "server_chat.h"
+
 
 #define PORT 8080
 #define MAX_CLIENTS 100
@@ -71,12 +74,16 @@ void *handle_client(void *arg) {
         printf("Message reçu de %d : %s\n", client_fd, buffer);
 
         // Gestion des messages
-        if (strncmp(buffer, "AUTH :", 6) == 0) {
+        if (strncmp(buffer, "AUTH:", 5) == 0) {
             create_user(buffer,client_fd);
             continue;
         } 
-        else if (strncmp(buffer, "CONN :", 6) == 0){
+        else if (strncmp(buffer, "CONN:", 5) == 0){
             connect_auth(buffer,client_fd);
+            continue;
+        }
+        else if(strncmp(buffer, "CHAN:", 5) == 0){
+            querry_channel(buffer,client_fd);
             continue;
         }
 
@@ -189,141 +196,6 @@ int main() {
     return 0;
 }
 
-int check_email(char *email, PGconn *conn){
-
-    char check_query[256];
-    snprintf(check_query, sizeof(check_query),
-            "SELECT id FROM users WHERE email = '%s'",email);
-
-    PGresult *check_res = PQexec(conn, check_query);
-
-    if (PQresultStatus(check_res) != PGRES_TUPLES_OK) {
-        printf("Erreur lors de la vérification de l'email.\n");
-        PQclear(check_res);
-        return -1;
-    }
-    int exits = PQntuples(check_res) > 0;
-    PQclear(check_res);
-    return exits ? 1 : 0;
-}
 
 
-void create_user(char *buffer, int client_fd){
 
-    char *data = buffer + 6;
-    while (*data == ' ') data++;
-    char *saveptr;
-
-    char *username = strtok_r(data, "|", &saveptr);
-    char *email = strtok_r(NULL, "|", &saveptr);
-    char *password = strtok_r(NULL, "|", &saveptr);
-
-    if (!username || strlen(username) == 0 ||
-    !email || strlen(email) == 0 ||
-    !password || strlen(password) == 0) {
-
-    printf("Requête invalide : champs vides.\n");
-    send(client_fd, "AUTH:0", strlen("AUTH:0"), 0);
-    return;
-    }
-    env_load(".", false);
-
-    PGconn *conn = PQconnectdb("");
-    if (PQstatus(conn) != CONNECTION_OK) {
-        printf("Connexion à la base de données échouée.");
-        PQfinish(conn);
-        return;
-    }
-
-    int check = check_email(email, conn);
-
-    if (check == 1){
-        printf("Email existe déjà.\n");
-        send(client_fd, "AUTH:2", strlen("AUTH:2"),0);
-    } else if (check == -1) {
-        printf("Erreur lors de la vérification de l'email.\n");
-        send(client_fd, "AUTH:0", strlen("AUTH:0"), 0);
-        PQfinish(conn);
-        return;
-    }
-    else{
-
-        PGresult *res = PQexecParams(
-            conn,
-            "INSERT INTO users (username, email, password_hash) "
-            "VALUES ($1, $2, crypt($3, gen_salt('bf')))",
-            3,
-            NULL,
-            (const char *[]) { username, email, password },
-            NULL,
-            NULL,
-            0
-        );
-        
-    if (PQresultStatus(res) == PGRES_COMMAND_OK) {
-        printf("Inscription réussie pour %s\n", username);
-        send(client_fd, "AUTH:1", strlen("AUTH:1"),0);
-    } else {
-        printf("Requête invalide : champs vides.\n");
-        send(client_fd, "AUTH:3", strlen("AUTH:3"),0);
-    }
-
-    PQclear(res);
-}
-    PQfinish(conn);
-    return;
-}
-
-void connect_auth(char *buffer, int client_fd){
-
-
-    char *data = buffer + 6;
-    while (*data == ' ') data++;
-    char *saveptr;
-
-    char *username = strtok_r(data, "|", &saveptr);
-    char *password = strtok_r(NULL, "|", &saveptr);
-
-    if (!username || strlen(username) == 0 ||
-    !password || strlen(password) == 0) {
-
-    printf("Requête invalide : champs vides.\n");
-    send(client_fd, "CONN:0", strlen("CONN:0"), 0);
-    return;
-    }
-
-    env_load(".", false);
-    
-    PGconn *conn = PQconnectdb("");
-    if (PQstatus(conn) != CONNECTION_OK) {
-        fprintf(stderr, "Erreur : %s\n", PQerrorMessage(conn));
-        PQfinish(conn);
-        return;
-    }
-    
-    PGresult *res = PQexecParams(
-        conn,
-        "SELECT id FROM users WHERE username = $1 AND password_hash = crypt($2, password_hash)",
-        2,
-        NULL,
-        (const char *[]) { username, password },
-        NULL,
-        NULL,
-        0
-    );    
-
-    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-        printf("Erreur dans la requête SQL.\n");
-        send(client_fd, "CONN:0", strlen("CONN:0"), 0);
-    } else if (PQntuples(res) == 1) {
-        printf("Connexion réussie pour %s\n", username);
-        send(client_fd, "CONN:1", strlen("CONN:1"), 0);
-    } else {
-        printf("Identifiants incorrects pour %s\n", username);
-        send(client_fd, "CONN:2", strlen("CONN:2"), 0);
-    }
-    
-
-    PQclear(res);
-    PQfinish(conn);
-}

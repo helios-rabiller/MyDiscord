@@ -8,7 +8,7 @@
 #include <signal.h>             // signal(), SIGINT → gestion des signaux système (Ctrl+C, interruption)
 
 
-#include "auth.h"
+#include "app_auth.h"
 #include "app_context.h"
 
 int main(int argc, char **argv) {
@@ -40,45 +40,3 @@ int main(int argc, char **argv) {
     close(ctx.client_fd);
     return status;
 }
-//     struct sockaddr_in server_addr;
-
-//     client_fd = socket(AF_INET, SOCK_STREAM, 0);
-//     if (client_fd == -1) {
-//         perror("Erreur socket");
-//         exit(EXIT_FAILURE);
-//     }
-
-//     server_addr.sin_family = AF_INET;
-//     server_addr.sin_port = htons(PORT);
-//     inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr);
-
-//     if (connect(client_fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
-//         perror("Erreur connexion");
-//         exit(EXIT_FAILURE);
-//     }
-
-//     printf("Connecté au serveur sur le port %d\n", PORT);
-
-//     close(client_fd);
-
-
-//     struct sockaddr_in server_addr;
-
-//     client_fd = socket(AF_INET, SOCK_STREAM, 0);
-//     if (client_fd == -1) {
-//         perror("Erreur socket");
-//         exit(EXIT_FAILURE);
-//     }
-
-//     server_addr.sin_family = AF_INET;
-//     server_addr.sin_port = htons(PORT);
-//     inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr);
-
-//     if (connect(client_fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
-//         perror("Erreur connexion");
-//         exit(EXIT_FAILURE);
-//     }
-
-//     printf("Connecté au serveur sur le port %d\n", PORT);
-
-//     close(client_fd);

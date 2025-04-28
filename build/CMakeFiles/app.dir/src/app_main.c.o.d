@@ -1,5 +1,5 @@
-CMakeFiles/app.dir/src/chat.c.o: \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/chat.c \
+CMakeFiles/app.dir/src/app_main.c.o: \
+ /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/app_main.c \
  /usr/include/stdc-predef.h /usr/include/gtk-4.0/gtk/gtk.h \
  /usr/include/gtk-4.0/gtk/css/gtkcss.h /usr/include/glib-2.0/glib.h \
  /usr/include/glib-2.0/glib/galloca.h /usr/include/glib-2.0/glib/gtypes.h \
@@ -745,5 +745,24 @@ CMakeFiles/app.dir/src/chat.c.o: \
  /usr/include/gtk-4.0/gtk/gtkwindowgroup.h \
  /usr/include/gtk-4.0/gtk/gtkwindow.h \
  /usr/include/gtk-4.0/gtk/gtkwindowhandle.h \
- /usr/include/gtk-4.0/gtk/gtk-autocleanups.h \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/chat.h
+ /usr/include/gtk-4.0/gtk/gtk-autocleanups.h /usr/include/arpa/inet.h \
+ /usr/include/netinet/in.h /usr/include/x86_64-linux-gnu/sys/socket.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
+ /usr/include/x86_64-linux-gnu/bits/socket.h \
+ /usr/include/x86_64-linux-gnu/bits/socket_type.h \
+ /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
+ /usr/include/x86_64-linux-gnu/asm/socket.h \
+ /usr/include/asm-generic/socket.h /usr/include/linux/posix_types.h \
+ /usr/include/linux/stddef.h \
+ /usr/include/x86_64-linux-gnu/asm/posix_types.h \
+ /usr/include/x86_64-linux-gnu/asm/posix_types_64.h \
+ /usr/include/asm-generic/posix_types.h \
+ /usr/include/x86_64-linux-gnu/asm/bitsperlong.h \
+ /usr/include/asm-generic/bitsperlong.h \
+ /usr/include/x86_64-linux-gnu/asm/sockios.h \
+ /usr/include/asm-generic/sockios.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
+ /usr/include/x86_64-linux-gnu/bits/in.h \
+ /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/app_auth.h \
+ /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/app_context.h \
+ /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/app_context.h

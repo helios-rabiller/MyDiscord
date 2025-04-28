@@ -8,8 +8,8 @@
     #include <signal.h>
     #include <libpq-fe.h>
     #include <dotenv.h>
-    #include "auth.h"
-    #include "chat.h"
+    #include "app_auth.h"
+    #include "app_chat.h"
     #include "app_context.h"
 
     static GtkWidget *entry_username;
@@ -63,7 +63,7 @@
         }
 
         char buffer[512];
-        snprintf(buffer, sizeof(buffer), "CONN : %s|%s", username, password);
+        snprintf(buffer, sizeof(buffer), "CONN:%s|%s", username, password);
         send(ctx->client_fd, buffer, strlen(buffer), 0);
 
         char auth_status[8];
@@ -73,14 +73,13 @@
         auth_status[bytes_read] = '\0';
 
         if (strcmp(auth_status, "CONN:1") == 0) {
-            show_alert(window, "Connexion réussie !");
             strncpy(ctx->username, username, sizeof(ctx->username) - 1);
             ctx->username[sizeof(ctx->username) - 1] = '\0';
-            show_chat_window(gtk_window_get_application(window), window, ctx->username);
+            show_chat_window(gtk_window_get_application(window), window, ctx);
         } else if (strcmp(auth_status, "CONN:0") == 0) {
-            show_alert(window, "Erreur lors de l'inscription. Erreur inconnue.");
+            show_alert(window, "Mot de passe / identifiant incorrect.");
         } else if (strcmp(auth_status, "CONN:2") == 0) {
-            show_alert(window, "Erreur lors de l'inscription. Champs vide.");
+            show_alert(window, "Erreur lors de la connexion. Champs vide.");
         } 
     }
 
@@ -98,7 +97,7 @@
         }
 
         char buffer[512];
-        snprintf(buffer, sizeof(buffer), "AUTH : %s|%s|%s", username, email, password);
+        snprintf(buffer, sizeof(buffer), "AUTH:%s|%s|%s", username, email, password);
         send(ctx->client_fd, buffer, strlen(buffer), 0);
 
         char auth_status[8];

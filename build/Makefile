@@ -129,77 +129,162 @@ app/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/build
 .PHONY : app/fast
 
-src/auth.o: src/auth.c.o
-.PHONY : src/auth.o
+#=============================================================================
+# Target rules for targets named server
+
+# Build rule for target.
+server: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server
+.PHONY : server
+
+# fast build rule for target.
+server/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/build
+.PHONY : server/fast
+
+src/app_auth.o: src/app_auth.c.o
+.PHONY : src/app_auth.o
 
 # target to build an object file
-src/auth.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/auth.c.o
-.PHONY : src/auth.c.o
+src/app_auth.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/app_auth.c.o
+.PHONY : src/app_auth.c.o
 
-src/auth.i: src/auth.c.i
-.PHONY : src/auth.i
+src/app_auth.i: src/app_auth.c.i
+.PHONY : src/app_auth.i
 
 # target to preprocess a source file
-src/auth.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/auth.c.i
-.PHONY : src/auth.c.i
+src/app_auth.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/app_auth.c.i
+.PHONY : src/app_auth.c.i
 
-src/auth.s: src/auth.c.s
-.PHONY : src/auth.s
+src/app_auth.s: src/app_auth.c.s
+.PHONY : src/app_auth.s
 
 # target to generate assembly for a file
-src/auth.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/auth.c.s
-.PHONY : src/auth.c.s
+src/app_auth.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/app_auth.c.s
+.PHONY : src/app_auth.c.s
 
-src/chat.o: src/chat.c.o
-.PHONY : src/chat.o
+src/app_chat.o: src/app_chat.c.o
+.PHONY : src/app_chat.o
 
 # target to build an object file
-src/chat.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/chat.c.o
-.PHONY : src/chat.c.o
+src/app_chat.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/app_chat.c.o
+.PHONY : src/app_chat.c.o
 
-src/chat.i: src/chat.c.i
-.PHONY : src/chat.i
+src/app_chat.i: src/app_chat.c.i
+.PHONY : src/app_chat.i
 
 # target to preprocess a source file
-src/chat.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/chat.c.i
-.PHONY : src/chat.c.i
+src/app_chat.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/app_chat.c.i
+.PHONY : src/app_chat.c.i
 
-src/chat.s: src/chat.c.s
-.PHONY : src/chat.s
+src/app_chat.s: src/app_chat.c.s
+.PHONY : src/app_chat.s
 
 # target to generate assembly for a file
-src/chat.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/chat.c.s
-.PHONY : src/chat.c.s
+src/app_chat.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/app_chat.c.s
+.PHONY : src/app_chat.c.s
 
-src/main.o: src/main.c.o
-.PHONY : src/main.o
+src/app_main.o: src/app_main.c.o
+.PHONY : src/app_main.o
 
 # target to build an object file
-src/main.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/main.c.o
-.PHONY : src/main.c.o
+src/app_main.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/app_main.c.o
+.PHONY : src/app_main.c.o
 
-src/main.i: src/main.c.i
-.PHONY : src/main.i
+src/app_main.i: src/app_main.c.i
+.PHONY : src/app_main.i
 
 # target to preprocess a source file
-src/main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/main.c.i
-.PHONY : src/main.c.i
+src/app_main.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/app_main.c.i
+.PHONY : src/app_main.c.i
 
-src/main.s: src/main.c.s
-.PHONY : src/main.s
+src/app_main.s: src/app_main.c.s
+.PHONY : src/app_main.s
 
 # target to generate assembly for a file
-src/main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/main.c.s
-.PHONY : src/main.c.s
+src/app_main.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/app_main.c.s
+.PHONY : src/app_main.c.s
+
+src/server.o: src/server.c.o
+.PHONY : src/server.o
+
+# target to build an object file
+src/server.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server.c.o
+.PHONY : src/server.c.o
+
+src/server.i: src/server.c.i
+.PHONY : src/server.i
+
+# target to preprocess a source file
+src/server.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server.c.i
+.PHONY : src/server.c.i
+
+src/server.s: src/server.c.s
+.PHONY : src/server.s
+
+# target to generate assembly for a file
+src/server.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server.c.s
+.PHONY : src/server.c.s
+
+src/server_auth.o: src/server_auth.c.o
+.PHONY : src/server_auth.o
+
+# target to build an object file
+src/server_auth.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server_auth.c.o
+.PHONY : src/server_auth.c.o
+
+src/server_auth.i: src/server_auth.c.i
+.PHONY : src/server_auth.i
+
+# target to preprocess a source file
+src/server_auth.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server_auth.c.i
+.PHONY : src/server_auth.c.i
+
+src/server_auth.s: src/server_auth.c.s
+.PHONY : src/server_auth.s
+
+# target to generate assembly for a file
+src/server_auth.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server_auth.c.s
+.PHONY : src/server_auth.c.s
+
+src/server_chat.o: src/server_chat.c.o
+.PHONY : src/server_chat.o
+
+# target to build an object file
+src/server_chat.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server_chat.c.o
+.PHONY : src/server_chat.c.o
+
+src/server_chat.i: src/server_chat.c.i
+.PHONY : src/server_chat.i
+
+# target to preprocess a source file
+src/server_chat.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server_chat.c.i
+.PHONY : src/server_chat.c.i
+
+src/server_chat.s: src/server_chat.c.s
+.PHONY : src/server_chat.s
+
+# target to generate assembly for a file
+src/server_chat.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/server_chat.c.s
+.PHONY : src/server_chat.c.s
 
 # Help Target
 help:
@@ -210,15 +295,25 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... app"
-	@echo "... src/auth.o"
-	@echo "... src/auth.i"
-	@echo "... src/auth.s"
-	@echo "... src/chat.o"
-	@echo "... src/chat.i"
-	@echo "... src/chat.s"
-	@echo "... src/main.o"
-	@echo "... src/main.i"
-	@echo "... src/main.s"
+	@echo "... server"
+	@echo "... src/app_auth.o"
+	@echo "... src/app_auth.i"
+	@echo "... src/app_auth.s"
+	@echo "... src/app_chat.o"
+	@echo "... src/app_chat.i"
+	@echo "... src/app_chat.s"
+	@echo "... src/app_main.o"
+	@echo "... src/app_main.i"
+	@echo "... src/app_main.s"
+	@echo "... src/server.o"
+	@echo "... src/server.i"
+	@echo "... src/server.s"
+	@echo "... src/server_auth.o"
+	@echo "... src/server_auth.i"
+	@echo "... src/server_auth.s"
+	@echo "... src/server_chat.o"
+	@echo "... src/server_chat.i"
+	@echo "... src/server_chat.s"
 .PHONY : help
 
 
