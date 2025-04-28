@@ -768,4 +768,5 @@ CMakeFiles/app.dir/src/app_chat.c.o: \
  /usr/include/asm-generic/bitsperlong.h \
  /usr/include/x86_64-linux-gnu/asm/sockios.h \
  /usr/include/asm-generic/sockios.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h
+ /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
+ /usr/include/dotenv.h

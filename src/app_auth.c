@@ -114,6 +114,8 @@
             show_alert(window, "Erreur lors de l'inscription. Champs vide.");
         } else if (strcmp(auth_status, "AUTH:2") == 0) {
             show_alert(window, "Erreur lors de l'inscription. L'email est déjà utilisé.");
+        } else if (strcmp(auth_status, "AUTH:4") == 0) {
+            show_alert(window, "Erreur lors de l'inscription. Le nom d'utilisateur est déjà utilisé.");
         }
     }
 

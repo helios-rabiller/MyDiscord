@@ -7,6 +7,9 @@
 #include "app_context.h"
 #include <sys/socket.h> 
 
+#include <dotenv.h>
+
+
 char buffer[512];
 
 typedef struct {
@@ -18,7 +21,13 @@ typedef struct {
     AppContext *ctx;
 } ChatContext;
 
+static gboolean refresh_channels(gpointer user_data);
+
+
 static void load_messages(ChatContext *ctx, const char *channel_name) {
+
+    env_load("..", false);
+
     PGconn *conn = PQconnectdb("");
     if (PQstatus(conn) != CONNECTION_OK) {
         printf("Erreur connexion DB\n");
@@ -63,25 +72,58 @@ static void on_channel_selected(GtkListBox *box, GtkListBoxRow *row, gpointer us
     }
 }
 
-static void load_channels(ChatContext *ctx) {
+static void clear_list_box(GtkListBox *list_box) {
+    GtkWidget *child = gtk_widget_get_first_child(GTK_WIDGET(list_box));
+    while (child != NULL) {
+        GtkWidget *next = gtk_widget_get_next_sibling(child);
+        gtk_list_box_remove(list_box, child);
+        child = next;
+    }
+}
 
-    
+static void load_channels(ChatContext *ctx) {
+ 
+    clear_list_box(GTK_LIST_BOX(ctx->channel_list));
+
+    char buffer[512];
     snprintf(buffer, sizeof(buffer), "CHAN:%s", ctx->ctx->username);
     send(ctx->ctx->client_fd, buffer, strlen(buffer), 0);
 
 
+    char list_channel[1024];
+    memset(list_channel, 0, sizeof(list_channel));
+
+    int bytes_read = read(ctx->ctx->client_fd, list_channel, sizeof(list_channel) - 1);
+
+    if (bytes_read <= 0) {
+        printf("Erreur réception des canaux ou serveur déconnecté.\n");
+        return; // stop fonction
+    }
+    
+    list_channel[bytes_read] = '\0';  // maintenant c'est safe
+    printf("%s", list_channel);
 
 
-    // for (int i = 0; i < n; i++) {
-    //     const char *channel_name = PQgetvalue(res, i, 0);
-    //     GtkWidget *label = gtk_label_new(channel_name);
-    //     gtk_list_box_append(GTK_LIST_BOX(ctx->channel_list), label);
-    // }
+    char *saveptr;
+    char *token = strtok_r(list_channel + 5, "|", &saveptr); 
 
+    while (token != NULL) {
+        GtkWidget *label = gtk_label_new(token);
+        gtk_list_box_append(GTK_LIST_BOX(ctx->channel_list), label);
+        token = strtok_r(NULL, "|", &saveptr);
+    }
+}
 
+static gboolean refresh_channels(gpointer user_data) {
+    ChatContext *ctx = (ChatContext *)user_data;
+    load_channels(ctx);
+    return G_SOURCE_CONTINUE;
 }
 
 static void load_users(ChatContext *ctx) {
+
+    env_load("..", false);
+
     PGconn *conn = PQconnectdb("");
     if (PQstatus(conn) != CONNECTION_OK) {
         printf("Erreur connexion DB\n");
@@ -112,6 +154,8 @@ static void on_send_message(GtkButton *button, gpointer user_data) {
 
     GtkWidget *label = gtk_list_box_row_get_child(selected_row);
     const char *channel_name = gtk_label_get_text(GTK_LABEL(label));
+
+    env_load("..", false);
 
     PGconn *conn = PQconnectdb("");
     if (PQstatus(conn) != CONNECTION_OK) {
@@ -180,9 +224,10 @@ void show_chat_window(GtkApplication *app, GtkWindow *previous_window, AppContex
     ctx->user_list = user_list;
     ctx->ctx = global_ctx;
 
-    load_channels(ctx);
-    load_users(ctx);
-
+    load_channels(ctx); // <<< charge au lancement une première fois
+    load_users(ctx);    // charge aussi les utilisateurs en ligne
+    g_timeout_add_seconds(5, refresh_channels, ctx); // rafraîchir toutes les 5 secondes
+    
     g_signal_connect(channel_list, "row-selected", G_CALLBACK(on_channel_selected), ctx);
     g_signal_connect(btn_send, "clicked", G_CALLBACK(on_send_message), ctx);
 

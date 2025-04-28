@@ -24,6 +24,27 @@ int check_email(char *email, PGconn *conn){
     PQclear(check_res);
     return exits ? 1 : 0;
 }
+
+int check_user(char *username, PGconn *conn){
+
+    char check_query[256];
+    snprintf(check_query, sizeof(check_query),
+            "SELECT id FROM users WHERE username = '%s'",username);
+
+    PGresult *check_res = PQexec(conn, check_query);
+
+    if (PQresultStatus(check_res) != PGRES_TUPLES_OK) {
+        printf("Erreur lors de la vérification d'user.\n");
+        PQclear(check_res);
+        return -1;
+    }
+    int exits = PQntuples(check_res) > 0;
+    PQclear(check_res);
+    return exits ? 1 : 0;
+}
+
+
+
 void add_general_channel(char *email, PGconn *conn) {
     PGresult *user_res = PQexecParams(conn,
         "SELECT id FROM users WHERE email = $1",
@@ -103,16 +124,22 @@ void create_user(char *buffer, int client_fd){
         return;
     }
 
-    int check = check_email(email, conn);
+    int email_check = check_email(email, conn);
+    int user_check = check_user(username, conn);
 
-    if (check == 1){
+    if (email_check == 1){
         printf("Email existe déjà.\n");
         send(client_fd, "AUTH:2", strlen("AUTH:2"),0);
-    } else if (check == -1) {
+    } else if (user_check == 1){
+        printf("Utilisateur existe déjà");
+        send(client_fd, "AUTH:4", strlen("AUTH:4"),0);
+    } 
+    else if (email_check == -1 || user_check == -1) {
         printf("Erreur lors de la vérification de l'email.\n");
         send(client_fd, "AUTH:0", strlen("AUTH:0"), 0);
         PQfinish(conn);
         return;
+        
     }
     else{
 
@@ -127,9 +154,7 @@ void create_user(char *buffer, int client_fd){
             NULL,
             0
         );
-    
-    
-
+     
 
     if (PQresultStatus(res) == PGRES_COMMAND_OK) {
         printf("Inscription réussie pour %s\n", username);
@@ -190,12 +215,22 @@ void connect_auth(char *buffer, int client_fd){
         send(client_fd, "CONN:0", strlen("CONN:0"), 0);
     } else if (PQntuples(res) == 1) {
         printf("Connexion réussie pour %s\n", username);
+
+
         PGresult *update = PQexecParams(conn,
             "UPDATE users SET status = 'online' WHERE username = $1",
-            3, NULL, (const char *[]) {username} , NULL, NULL, 0);
+            1, NULL, (const char *[]) {username} , NULL, NULL, 0);
         
+            if (PQresultStatus(update) != PGRES_COMMAND_OK) {
+                printf("Erreur lors de la mise à jour du status online.\n");
+                PQclear(update);
+                PQclear(res);
+                PQfinish(conn);
+                return;
+            }
+
             PQclear(update);
-        send(client_fd, "CONN:1", strlen("CONN:1"), 0);
+            send(client_fd, "CONN:1", strlen("CONN:1"), 0);
     } else {
         printf("Identifiants incorrects pour %s\n", username);
         send(client_fd, "CONN:2", strlen("CONN:2"), 0);
