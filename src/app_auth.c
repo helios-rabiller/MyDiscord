@@ -73,9 +73,11 @@
         auth_status[bytes_read] = '\0';
 
         if (strcmp(auth_status, "CONN:1") == 0) {
+            
             strncpy(ctx->username, username, sizeof(ctx->username) - 1);
             ctx->username[sizeof(ctx->username) - 1] = '\0';
             show_chat_window(gtk_window_get_application(window), window, ctx);
+
         } else if (strcmp(auth_status, "CONN:0") == 0) {
             show_alert(window, "Mot de passe / identifiant incorrect.");
         } else if (strcmp(auth_status, "CONN:2") == 0) {

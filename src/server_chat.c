@@ -62,9 +62,7 @@ void querry_channel(char *buffer, int client_fd) {
 }
 
 
-
-
-querry_message(char *buffer, int client_fd){
+void querry_message(char *buffer, int client_fd){
 
     char *data = buffer + 5;
     char *saveptr;
@@ -83,7 +81,7 @@ querry_message(char *buffer, int client_fd){
     }
 
     const char *query = 
-    "INSERT INTO messages (channel_id, user_id, content, is_encrypted) "
+    "INSERT INTO messages (channel_id, user_id, content) "
     "VALUES ("
     "(SELECT id FROM channels WHERE name = $1),"
     "(SELECT id FROM users WHERE username = $2),"
@@ -98,6 +96,83 @@ querry_message(char *buffer, int client_fd){
         printf("message envoyé au canal '%s'\n", channel_name);
     } else {
         printf("Erreur lors de l'envoi du message : %s\n", PQerrorMessage(conn));
+    }
+
+    PQclear(res);
+    PQfinish(conn);
+
+    
+    char formatted_msg[2000];
+    snprintf(formatted_msg, sizeof(formatted_msg), "NEW:%s: %s\n", username, content);
+
+    pthread_mutex_lock(&clients_mutex);
+
+    for (int i = 0; i < MAX_CLIENTS; i++) {
+        if (clients[i] != -1 && clients[i] != client_fd) {
+            send(clients[i], formatted_msg, strlen(formatted_msg), 0);
+        }
+    }
+
+    pthread_mutex_unlock(&clients_mutex);
+}
+
+void send_channel_history(char *buffer, int client_fd) {
+    char *channel_name = buffer + 5;
+
+    printf("[SERVEUR] Envoi historique au client %d\n", client_fd);
+
+    size_t len = strlen(channel_name);
+    if (len > 0 && channel_name[len-1] == '\n') {
+        channel_name[len-1] = '\0';
+    }
+
+    env_load("..", false);
+    PGconn *conn = PQconnectdb("");
+    if (PQstatus(conn) != CONNECTION_OK) {
+        PQfinish(conn);
+        return;
+    }
+
+    const char *param[1] = { channel_name };
+
+    PGresult *res = PQexecParams(
+        conn,
+        "SELECT u.username, m.content, m.timestamp FROM messages m "
+        "JOIN users u ON u.id = m.user_id "
+        "WHERE m.channel_id = (SELECT id FROM channels WHERE name = $1) "
+        "ORDER BY m.timestamp ASC",
+        1, NULL, param, NULL, NULL, 0
+    );
+
+
+    
+    if (PQresultStatus(res) == PGRES_TUPLES_OK) {
+        int n = PQntuples(res);
+        for (int i = 0; i < n; i++) {
+            const char *username = PQgetvalue(res, i, 0);
+            const char *message = PQgetvalue(res, i, 1);
+            const char *timestamp = PQgetvalue(res, i, 2);
+            char formatted[2000];
+
+            char date[20];
+            strncpy(date, timestamp, 16);
+            date[16] = '\0';
+            
+            char clean_msg[1024];
+            strncpy(clean_msg, message, sizeof(clean_msg));
+            clean_msg[sizeof(clean_msg) - 1] = '\0';
+
+            for (char *p = clean_msg; *p; p++) {
+                if (*p == '\n' || *p == '\r') {
+                    *p = ' ';
+    }
+}
+
+            printf("[SERVEUR] HIST: %s|%s|%s\n", username, clean_msg, date);
+            snprintf(formatted, sizeof(formatted), "HIST:%s|%s|%s\n", username, clean_msg, date);
+            send(client_fd, formatted, strlen(formatted), 0);
+            usleep(10000);
+        }
     }
 
     PQclear(res);

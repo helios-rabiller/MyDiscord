@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <arpa/inet.h>      // inet_ntoa(), htons()
-#include <pthread.h>        // threads POSIX
-#include <signal.h>         // gestion Ctrl+C
-#include <netinet/in.h>     // struct sockaddr_in
+#include <arpa/inet.h>      
+#include <pthread.h>        
+#include <signal.h>         
+#include <netinet/in.h>     
 #include <libpq-fe.h>
 #include <dotenv.h>
 
@@ -37,7 +37,6 @@ void handle_sigint(int sig) {
     exit(0);
 }
 
-// Fonction qui gère la communication avec un client
 void *handle_client(void *arg) {
     int client_fd = *(int *)arg;   
     free(arg);                     
@@ -68,12 +67,11 @@ void *handle_client(void *arg) {
         buffer[strcspn(buffer, "\n")] = 0; 
         strcat(buffer, "\n");             
 
-        char message[1050]; // pour mettre "Client X > " + buffer
+        char message[1050]; 
         snprintf(message, sizeof(message), "Client %d > %s\n", client_fd, buffer);
     
         printf("Message reçu de %d : %s\n", client_fd, buffer);
 
-        // Gestion des messages
         if (strncmp(buffer, "AUTH:", 5) == 0) {
             create_user(buffer,client_fd);
             continue;
@@ -90,21 +88,17 @@ void *handle_client(void *arg) {
             querry_message(buffer,client_fd);
             continue;
         }
+        else if (strncmp(buffer, "HIST:", 5) == 0) {
+            send_channel_history(buffer, client_fd);
+            continue;
+        }
 
          else {    
-                pthread_mutex_lock(&clients_mutex);
-
-                for (int i = 0; i < MAX_CLIENTS; i++) {
-                    if (clients[i] != -1 && clients[i] != client_fd) {
-                        send(clients[i], message, strlen(message), 0);
-                    }
-                }
-
-                pthread_mutex_unlock(&clients_mutex);
+                printf("error server handle_client");
         }
     }
 
-    close(client_fd);  // Fermer la connexion avec ce client
+    close(client_fd);  
 
     pthread_mutex_lock(&clients_mutex);
 
@@ -124,28 +118,24 @@ void *handle_client(void *arg) {
 int main() {
     struct sockaddr_in server_addr;
 
-    // Gérer interruption clavier (Ctrl+C)
+   
     signal(SIGINT, handle_sigint);
 
-    // 1. Créer le socket serveur (TCP)
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd == -1) {
         perror("Erreur socket");
         exit(EXIT_FAILURE);
     }
 
-    // 2. Définir les infos du serveur
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = INADDR_ANY;
     server_addr.sin_port = htons(PORT);
 
-    // 3. Lier le socket à l’adresse
     if (bind(server_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
         perror("Erreur bind");
         exit(EXIT_FAILURE);
     }
 
-    // 4. Mettre le socket en écoute
     if (listen(server_fd, MAX_CLIENTS) < 0) {
         perror("Erreur listen");
         exit(EXIT_FAILURE);
@@ -157,24 +147,20 @@ int main() {
         clients[i] = -1;
     }
 
-    // Boucle principale
     while (1) {
         struct sockaddr_in client_addr;
         socklen_t client_len = sizeof(client_addr);
 
-        // 5. Accepter une connexion
         int client_fd = accept(server_fd, (struct sockaddr*)&client_addr, &client_len);
         if (client_fd < 0) {
             perror("Erreur accept");
             continue;
         }
 
-        // 6. Afficher IP + port
         char *ip = inet_ntoa(client_addr.sin_addr);
         int port = ntohs(client_addr.sin_port);
         printf("Nouveau client connecté depuis %s:%d\n", ip, port);
 
-        // 7. Allouer dynamiquement le socket pour le thread
         int *pclient = malloc(sizeof(int));
         if (pclient == NULL) {
             perror("Erreur malloc");
@@ -183,7 +169,6 @@ int main() {
         }
         *pclient = client_fd;
 
-        // 8. Créer un thread pour gérer ce client
         pthread_t tid;
         if (pthread_create(&tid, NULL, handle_client, pclient) != 0) {
             perror("Erreur création thread");
@@ -192,7 +177,6 @@ int main() {
             continue;
         }
 
-        // 9. Détacher le thread (pas besoin de pthread_join)
         pthread_detach(tid);
     }
 

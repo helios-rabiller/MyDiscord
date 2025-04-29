@@ -23,6 +23,59 @@ typedef struct {
 
 static gboolean refresh_channels(gpointer user_data);
 
+static gpointer listen_for_messages(gpointer user_data) {
+
+    printf("[THREAD] listener_for_messages lancé\n"); 
+    ChatContext *ctx = (ChatContext *)user_data;
+    printf("Thread: client_fd = %d\n", ctx->ctx->client_fd);
+
+
+    char recv_buffer[2048];
+
+    while (1) {
+        memset(recv_buffer, 0, sizeof(recv_buffer));
+        int bytes_read = recv(ctx->ctx->client_fd, recv_buffer, sizeof(recv_buffer) - 1, 0);
+
+        if (bytes_read <= 0) {
+            printf("Déconnecté du serveur ou erreur.\n");
+            break;
+        }
+
+        recv_buffer[bytes_read] = '\0';
+
+        char *saveptr;
+        char *line = strtok_r(recv_buffer, "\n", &saveptr);
+        while (line != NULL) {
+
+            if (g_str_has_prefix(line, "HIST:") || g_str_has_prefix(line, "NEW:")) {
+                char *prefix_save;
+                char *type = strtok_r(line, ":", &prefix_save);
+                char *username = strtok_r(NULL, "|", &prefix_save);
+                char *message = strtok_r(NULL, "|", &prefix_save);
+                char *timestamp = strtok_r(NULL, "|", &prefix_save);
+        
+                if (username && message && timestamp) {
+                    g_strchomp(username);
+                    g_strchomp(message);
+                    g_strchomp(timestamp);
+        
+                    char formatted[1024];
+                    snprintf(formatted, sizeof(formatted), "[%s] %s : %s\n", timestamp, username, message);
+                    printf("formatted message : '%s'",formatted);
+                    GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ctx->chat_display));
+                    gtk_text_buffer_insert_at_cursor(buffer, formatted, -1);
+                }
+            } else {
+                g_print("Inconnu ou ignoré : %s\n", line);
+            }
+        
+            line = strtok_r(NULL, "\n", &saveptr);
+        }
+}
+return NULL;
+}
+
+
 
 static void load_messages(ChatContext *ctx, const char *channel_name) {
 
@@ -68,7 +121,13 @@ static void on_channel_selected(GtkListBox *box, GtkListBoxRow *row, gpointer us
         snprintf(title, sizeof(title), "Chat - %s", channel_name);
         gtk_label_set_text(GTK_LABEL(ctx->chat_label), title);
 
-        load_messages(ctx, channel_name);
+        GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ctx->chat_display));
+        gtk_text_buffer_set_text(buffer, "", -1); // vider l'affichage
+
+        char histo_cmd[512];
+        snprintf(histo_cmd, sizeof(histo_cmd), "HIST:%s", channel_name);
+        send(ctx->ctx->client_fd, histo_cmd, strlen(histo_cmd), 0);
+
     }
 }
 
@@ -160,7 +219,6 @@ static void on_send_message(GtkButton *button, gpointer user_data) {
     send(ctx->ctx->client_fd, buffer, strlen(buffer), 0);
 
     gtk_editable_set_text(GTK_EDITABLE(ctx->entry), "");
-    load_messages(ctx, channel_name);
 }
 
 void show_chat_window(GtkApplication *app, GtkWindow *previous_window, AppContext *global_ctx) {
@@ -181,14 +239,22 @@ void show_chat_window(GtkApplication *app, GtkWindow *previous_window, AppContex
     gtk_box_append(GTK_BOX(vbox_left), channel_list);
 
     GtkWidget *chat_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_widget_set_vexpand(chat_box, TRUE);
     gtk_box_append(GTK_BOX(main_hbox), chat_box);
 
     GtkWidget *chat_label = gtk_label_new("Chat - Aucun canal");
     gtk_box_append(GTK_BOX(chat_box), chat_label);
 
+    GtkWidget *scroll = gtk_scrolled_window_new();
+    gtk_widget_set_vexpand(scroll, TRUE); 
+    gtk_widget_set_hexpand(scroll, TRUE); 
+    gtk_box_append(GTK_BOX(chat_box), scroll);
+
     GtkWidget *chat_display = gtk_text_view_new();
     gtk_text_view_set_editable(GTK_TEXT_VIEW(chat_display), FALSE);
-    gtk_box_append(GTK_BOX(chat_box), chat_display);
+    gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(chat_display), GTK_WRAP_WORD_CHAR);
+    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scroll), chat_display);
+
 
     GtkWidget *entry = gtk_entry_new();
     GtkWidget *btn_send = gtk_button_new_with_label("Envoyer");
@@ -210,9 +276,13 @@ void show_chat_window(GtkApplication *app, GtkWindow *previous_window, AppContex
     ctx->user_list = user_list;
     ctx->ctx = global_ctx;
 
+  
     load_channels(ctx); 
     load_users(ctx);    
-    g_timeout_add_seconds(5, refresh_channels, ctx); 
+    // g_timeout_add_seconds(5, refresh_channels, ctx); 
+
+    GThread *listener_thread = g_thread_new("listener", listen_for_messages, ctx);
+
     
     g_signal_connect(channel_list, "row-selected", G_CALLBACK(on_channel_selected), ctx);
     g_signal_connect(btn_send, "clicked", G_CALLBACK(on_send_message), ctx);
