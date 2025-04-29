@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "socket.h": "c",
+        "in.h": "c",
+        "dotenv.h": "c",
+        "string.h": "c",
+        "cstdlib": "c",
+        "unistd.h": "c",
+        "app_context.h": "c"
+    }
+}
