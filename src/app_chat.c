@@ -25,10 +25,7 @@ static gboolean refresh_channels(gpointer user_data);
 
 static gpointer listen_for_messages(gpointer user_data) {
 
-    printf("[THREAD] listener_for_messages lancé\n"); 
     ChatContext *ctx = (ChatContext *)user_data;
-    printf("Thread: client_fd = %d\n", ctx->ctx->client_fd);
-
 
     char recv_buffer[2048];
 

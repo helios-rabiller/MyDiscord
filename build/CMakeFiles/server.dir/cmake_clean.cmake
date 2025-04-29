@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/server.dir/src/dotenv.c.o"
+  "CMakeFiles/server.dir/src/dotenv.c.o.d"
   "CMakeFiles/server.dir/src/server.c.o"
   "CMakeFiles/server.dir/src/server.c.o.d"
   "CMakeFiles/server.dir/src/server_auth.c.o"

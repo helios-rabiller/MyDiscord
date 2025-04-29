@@ -12,7 +12,6 @@ include_directories(
     ${GTK_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/include
     /usr/include/postgresql
-    /usr/local/include
 )
 
 # Ajouter les options de compilation
@@ -23,6 +22,7 @@ add_executable(app
     src/app_main.c
     src/app_auth.c
     src/app_chat.c
+    src/dotenv.c
 )
 
 target_link_libraries(app
@@ -37,6 +37,7 @@ add_executable(server
     src/server.c
     src/server_auth.c
     src/server_chat.c
+    src/dotenv.c
 )
 
 target_link_libraries(server

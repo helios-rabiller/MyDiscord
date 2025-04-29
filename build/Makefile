@@ -214,6 +214,33 @@ src/app_main.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/app_main.c.s
 .PHONY : src/app_main.c.s
 
+src/dotenv.o: src/dotenv.c.o
+.PHONY : src/dotenv.o
+
+# target to build an object file
+src/dotenv.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/dotenv.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/dotenv.c.o
+.PHONY : src/dotenv.c.o
+
+src/dotenv.i: src/dotenv.c.i
+.PHONY : src/dotenv.i
+
+# target to preprocess a source file
+src/dotenv.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/dotenv.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/dotenv.c.i
+.PHONY : src/dotenv.c.i
+
+src/dotenv.s: src/dotenv.c.s
+.PHONY : src/dotenv.s
+
+# target to generate assembly for a file
+src/dotenv.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/dotenv.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/dotenv.c.s
+.PHONY : src/dotenv.c.s
+
 src/server.o: src/server.c.o
 .PHONY : src/server.o
 
@@ -305,6 +332,9 @@ help:
 	@echo "... src/app_main.o"
 	@echo "... src/app_main.i"
 	@echo "... src/app_main.s"
+	@echo "... src/dotenv.o"
+	@echo "... src/dotenv.i"
+	@echo "... src/dotenv.s"
 	@echo "... src/server.o"
 	@echo "... src/server.i"
 	@echo "... src/server.s"

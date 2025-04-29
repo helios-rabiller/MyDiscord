@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <dotenv.h>
 #include <sys/socket.h> 
+#include <time.h>
 
 
 void querry_channel(char *buffer, int client_fd) {
@@ -101,17 +102,30 @@ void querry_message(char *buffer, int client_fd){
     PQclear(res);
     PQfinish(conn);
 
-    
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+    char timestamp[20];
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M", t);
+
+    char clean_msg[1024];
+    strncpy(clean_msg, content, sizeof(clean_msg));
+    clean_msg[sizeof(clean_msg) - 1] = '\0';
+    for (char *p = clean_msg; *p; p++) {
+        if (*p == '\n' || *p == '\r') *p = ' ';
+}
+
+
     char formatted_msg[2000];
-    snprintf(formatted_msg, sizeof(formatted_msg), "NEW:%s: %s\n", username, content);
+    snprintf(formatted_msg, sizeof(formatted_msg), "NEW:%s|%s|%s\n", username, clean_msg, timestamp);
 
     pthread_mutex_lock(&clients_mutex);
 
     for (int i = 0; i < MAX_CLIENTS; i++) {
-        if (clients[i] != -1 && clients[i] != client_fd) {
+        if (clients[i] != -1) {
             send(clients[i], formatted_msg, strlen(formatted_msg), 0);
         }
     }
+    
 
     pthread_mutex_unlock(&clients_mutex);
 }

@@ -11,6 +11,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/app_auth.c" "CMakeFiles/app.dir/src/app_auth.c.o" "gcc" "CMakeFiles/app.dir/src/app_auth.c.o.d"
   "/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/app_chat.c" "CMakeFiles/app.dir/src/app_chat.c.o" "gcc" "CMakeFiles/app.dir/src/app_chat.c.o.d"
   "/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/app_main.c" "CMakeFiles/app.dir/src/app_main.c.o" "gcc" "CMakeFiles/app.dir/src/app_main.c.o.d"
+  "/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/dotenv.c" "CMakeFiles/app.dir/src/dotenv.c.o" "gcc" "CMakeFiles/app.dir/src/dotenv.c.o.d"
   )
 
 # Targets to which this target links.

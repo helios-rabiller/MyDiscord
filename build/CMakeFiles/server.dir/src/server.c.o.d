@@ -109,7 +109,8 @@ CMakeFiles/server.dir/src/server.c.o: \
  /usr/include/x86_64-linux-gnu/bits/signal_ext.h \
  /usr/include/postgresql/libpq-fe.h \
  /usr/include/postgresql/postgres_ext.h \
- /usr/include/postgresql/pg_config_ext.h /usr/include/dotenv.h \
+ /usr/include/postgresql/pg_config_ext.h \
+ /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/dotenv.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h \
  /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/server_auth.h \
  /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/server_chat.h

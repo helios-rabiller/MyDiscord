@@ -5,6 +5,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/app.dir/src/app_chat.c.o.d"
   "CMakeFiles/app.dir/src/app_main.c.o"
   "CMakeFiles/app.dir/src/app_main.c.o.d"
+  "CMakeFiles/app.dir/src/dotenv.c.o"
+  "CMakeFiles/app.dir/src/dotenv.c.o.d"
   "app"
   "app.pdb"
 )
