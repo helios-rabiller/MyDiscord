@@ -55,10 +55,51 @@ void querry_channel(char *buffer, int client_fd) {
         }
     }
 
-    printf("[DEBUG Serveur] Envoi au client : %s\n", send_buffer);
     send(client_fd, send_buffer, strlen(send_buffer), 0);
 
     PQclear(res);
     PQfinish(conn);
 }
 
+
+
+
+querry_message(char *buffer, int client_fd){
+
+    char *data = buffer + 5;
+    char *saveptr;
+
+    char *channel_name = strtok_r(data, "|", &saveptr);
+    char *username = strtok_r(NULL, "|", &saveptr);
+    char *content = strtok_r(NULL, "|", &saveptr);
+
+    env_load("..", false);
+
+    PGconn *conn = PQconnectdb("");
+    if (PQstatus(conn) != CONNECTION_OK) {
+        printf("Erreur connexion DB\n");
+        PQfinish(conn);
+        return;
+    }
+
+    const char *query = 
+    "INSERT INTO messages (channel_id, user_id, content, is_encrypted) "
+    "VALUES ("
+    "(SELECT id FROM channels WHERE name = $1),"
+    "(SELECT id FROM users WHERE username = $2),"
+    "$3"
+    ");";
+
+    const char *params[3] = {channel_name , username, content};
+
+    PGresult *res = PQexecParams(conn,query,3,NULL, params, NULL, NULL, 0);
+
+    if (PQresultStatus(res) == PGRES_COMMAND_OK) {
+        printf("message envoyé au canal '%s'\n", channel_name);
+    } else {
+        printf("Erreur lors de l'envoi du message : %s\n", PQerrorMessage(conn));
+    }
+
+    PQclear(res);
+    PQfinish(conn);
+}

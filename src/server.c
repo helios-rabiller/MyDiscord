@@ -86,6 +86,10 @@ void *handle_client(void *arg) {
             querry_channel(buffer,client_fd);
             continue;
         }
+        else if(strncmp(buffer, "MESS:", 5) == 0){
+            querry_message(buffer,client_fd);
+            continue;
+        }
 
          else {    
                 pthread_mutex_lock(&clients_mutex);

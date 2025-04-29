@@ -97,10 +97,10 @@ static void load_channels(ChatContext *ctx) {
 
     if (bytes_read <= 0) {
         printf("Erreur réception des canaux ou serveur déconnecté.\n");
-        return; // stop fonction
+        return; 
     }
     
-    list_channel[bytes_read] = '\0';  // maintenant c'est safe
+    list_channel[bytes_read] = '\0';  
     printf("%s", list_channel);
 
 
@@ -155,23 +155,9 @@ static void on_send_message(GtkButton *button, gpointer user_data) {
     GtkWidget *label = gtk_list_box_row_get_child(selected_row);
     const char *channel_name = gtk_label_get_text(GTK_LABEL(label));
 
-    env_load("..", false);
-
-    PGconn *conn = PQconnectdb("");
-    if (PQstatus(conn) != CONNECTION_OK) {
-        printf("Erreur connexion DB\n");
-        PQfinish(conn);
-        return;
-    }
-
-    const char *paramValues[3] = { ctx->ctx->username, channel_name, message };
-
-    PGresult *res = PQexecParams(conn,
-        "INSERT INTO messages (sender, channel_id, content) VALUES ($1, (SELECT id FROM channels WHERE name = $2), $3)",
-        3, NULL, paramValues, NULL, NULL, 0);
-
-    PQclear(res);
-    PQfinish(conn);
+    char buffer[2000];
+    snprintf(buffer, sizeof(buffer), "MESS:%s|%s|%s", channel_name, ctx->ctx->username, message);
+    send(ctx->ctx->client_fd, buffer, strlen(buffer), 0);
 
     gtk_editable_set_text(GTK_EDITABLE(ctx->entry), "");
     load_messages(ctx, channel_name);
@@ -224,9 +210,9 @@ void show_chat_window(GtkApplication *app, GtkWindow *previous_window, AppContex
     ctx->user_list = user_list;
     ctx->ctx = global_ctx;
 
-    load_channels(ctx); // <<< charge au lancement une première fois
-    load_users(ctx);    // charge aussi les utilisateurs en ligne
-    g_timeout_add_seconds(5, refresh_channels, ctx); // rafraîchir toutes les 5 secondes
+    load_channels(ctx); 
+    load_users(ctx);    
+    g_timeout_add_seconds(5, refresh_channels, ctx); 
     
     g_signal_connect(channel_list, "row-selected", G_CALLBACK(on_channel_selected), ctx);
     g_signal_connect(btn_send, "clicked", G_CALLBACK(on_send_message), ctx);
