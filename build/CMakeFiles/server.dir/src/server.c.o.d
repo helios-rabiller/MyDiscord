@@ -113,4 +113,5 @@ CMakeFiles/server.dir/src/server.c.o: \
  /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/dotenv.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h \
  /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/server_auth.h \
+ /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/server_chat.h \
  /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/server_chat.h
