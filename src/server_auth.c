@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <dotenv.h>
 #include <sys/socket.h>
-
+#include <glib.h>
 
 int check_email(char *email, PGconn *conn){
 
@@ -105,14 +105,19 @@ void create_user(char *buffer, int client_fd){
     char *username = strtok_r(data, "|", &saveptr);
     char *email = strtok_r(NULL, "|", &saveptr);
     char *password = strtok_r(NULL, "|", &saveptr);
+    
+    if (username) g_strchomp(username);
+    if (email) g_strchomp(email);
+    if (password) g_strchomp(password);
 
-    if (!username || strlen(username) == 0 ||
-    !email || strlen(email) == 0 ||
-    !password || strlen(password) == 0) {
-
-    printf("Requête invalide : champs vides.\n");
-    send(client_fd, "AUTH:0", strlen("AUTH:0"), 0);
-    return;
+    if (
+        !username || strlen(username) == 0 || username[strlen(username) - 1] == ' ' ||
+        !email    || strlen(email) == 0    || email[strlen(email) - 1]    == ' ' ||
+        !password || strlen(password) == 0 || password[strlen(password) - 1] == ' '
+    ) {
+        printf("Requête invalide : champs vides.\n");
+        send(client_fd, "AUTH:0", strlen("AUTH:0"), 0);
+        return;
     }
 
     env_load("..", false);

@@ -91,7 +91,11 @@ void *handle_client(void *arg) {
         else if (strncmp(buffer, "HIST:", 5) == 0) {
             send_channel_history(buffer, client_fd);
             continue;
-        }
+        } 
+        else if (strncmp(buffer, "CREATE_CHAN:", 12) == 0) {
+            create_channel(buffer, client_fd);
+            continue;
+        } 
 
          else {    
                 printf("error server handle_client");
