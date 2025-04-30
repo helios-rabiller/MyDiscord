@@ -21,8 +21,6 @@ typedef struct {
     AppContext *ctx;
 } ChatContext;
 
-static gboolean refresh_channels(gpointer user_data);
-
 static gpointer listen_for_messages(gpointer user_data) {
 
     ChatContext *ctx = (ChatContext *)user_data;
@@ -64,22 +62,26 @@ static gpointer listen_for_messages(gpointer user_data) {
                 }
             } else if (g_str_has_prefix(line, "NEWCHAN:")) {
                 const char *channel_name = line + strlen("NEWCHAN:");
-            
+                
                 gboolean exists = FALSE;
                 for (GtkWidget *child = gtk_widget_get_first_child(ctx->channel_list);
                      child != NULL;
                      child = gtk_widget_get_next_sibling(child)) {
             
-                    const char *text = gtk_label_get_text(GTK_LABEL(child));
-                    if (strcmp(text, channel_name) == 0) {
+                    const char *existing_name = g_object_get_data(G_OBJECT(child), "channel_name");
+                    if (existing_name && strcmp(existing_name, channel_name) == 0) {
                         exists = TRUE;
                         break;
                     }
                 }
+            
                 if (!exists) {
                     GtkWidget *label = gtk_label_new(channel_name);
-                    gtk_list_box_append(GTK_LIST_BOX(ctx->channel_list), label);
-                    gtk_widget_show(label);
+                    GtkWidget *row = gtk_list_box_row_new();
+                    gtk_list_box_row_set_child(GTK_LIST_BOX_ROW(row), label);
+                    g_object_set_data(G_OBJECT(row), "channel_name", g_strdup(channel_name));
+                    gtk_list_box_append(GTK_LIST_BOX(ctx->channel_list), row);
+                    gtk_widget_show(row);
                 }
             }
             
@@ -151,8 +153,9 @@ static void on_create_channel(GtkButton *button, gpointer user_data) {
 static void on_channel_selected(GtkListBox *box, GtkListBoxRow *row, gpointer user_data) {
     if (row != NULL) {
         ChatContext *ctx = (ChatContext *)user_data;
-        GtkWidget *label = gtk_list_box_row_get_child(row);
-        const char *channel_name = gtk_label_get_text(GTK_LABEL(label));
+        const char *channel_name = g_object_get_data(G_OBJECT(row), "channel_name");
+        if (!channel_name) return;
+
 
         char title[256];
         snprintf(title, sizeof(title), "Chat - %s", channel_name);
@@ -205,16 +208,13 @@ static void load_channels(ChatContext *ctx) {
 
     while (token != NULL) {
         GtkWidget *label = gtk_label_new(token);
-        gtk_list_box_append(GTK_LIST_BOX(ctx->channel_list), label);
+        GtkWidget *row = gtk_list_box_row_new();
+        gtk_list_box_row_set_child(GTK_LIST_BOX_ROW(row), label);
+        g_object_set_data(G_OBJECT(row), "channel_name", g_strdup(token));
+        gtk_list_box_append(GTK_LIST_BOX(ctx->channel_list), row);
+        gtk_widget_show(row);
         token = strtok_r(NULL, "|", &saveptr);
-        gtk_widget_show(label); 
-    }
-}
-
-static gboolean refresh_channels(gpointer user_data) {
-    ChatContext *ctx = (ChatContext *)user_data;
-    load_channels(ctx);
-    return G_SOURCE_CONTINUE;
+    }    
 }
 
 static void load_users(ChatContext *ctx) {
@@ -249,8 +249,8 @@ static void on_send_message(GtkButton *button, gpointer user_data) {
     GtkListBoxRow *selected_row = gtk_list_box_get_selected_row(GTK_LIST_BOX(ctx->channel_list));
     if (!selected_row) return;
 
-    GtkWidget *label = gtk_list_box_row_get_child(selected_row);
-    const char *channel_name = gtk_label_get_text(GTK_LABEL(label));
+    const char *channel_name = g_object_get_data(G_OBJECT(selected_row), "channel_name");
+    if (!channel_name) return;
 
     char buffer[2000];
     snprintf(buffer, sizeof(buffer), "MESS:%s|%s|%s", channel_name, ctx->ctx->username, message);
@@ -258,6 +258,7 @@ static void on_send_message(GtkButton *button, gpointer user_data) {
 
     gtk_editable_set_text(GTK_EDITABLE(ctx->entry), "");
 }
+
 
 void show_chat_window(GtkApplication *app, GtkWindow *previous_window, AppContext *global_ctx) {
     gtk_window_destroy(previous_window);
@@ -317,10 +318,8 @@ void show_chat_window(GtkApplication *app, GtkWindow *previous_window, AppContex
     ctx->user_list = user_list;
     ctx->ctx = global_ctx;
 
-  
     load_channels(ctx); 
     load_users(ctx);    
-    // g_timeout_add_seconds(5, refresh_channels, ctx); 
 
     GThread *listener_thread = g_thread_new("listener", listen_for_messages, ctx);
 
