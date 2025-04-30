@@ -6,6 +6,7 @@
         "string.h": "c",
         "cstdlib": "c",
         "unistd.h": "c",
-        "app_context.h": "c"
+        "app_context.h": "c",
+        "time.h": "c"
     }
 }

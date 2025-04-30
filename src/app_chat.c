@@ -62,7 +62,28 @@ static gpointer listen_for_messages(gpointer user_data) {
                     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ctx->chat_display));
                     gtk_text_buffer_insert_at_cursor(buffer, formatted, -1);
                 }
-            } else {
+            } else if (g_str_has_prefix(line, "NEWCHAN:")) {
+                const char *channel_name = line + strlen("NEWCHAN:");
+            
+                gboolean exists = FALSE;
+                for (GtkWidget *child = gtk_widget_get_first_child(ctx->channel_list);
+                     child != NULL;
+                     child = gtk_widget_get_next_sibling(child)) {
+            
+                    const char *text = gtk_label_get_text(GTK_LABEL(child));
+                    if (strcmp(text, channel_name) == 0) {
+                        exists = TRUE;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    GtkWidget *label = gtk_label_new(channel_name);
+                    gtk_list_box_append(GTK_LIST_BOX(ctx->channel_list), label);
+                    gtk_widget_show(label);
+                }
+            }
+            
+            else {
                 g_print("Inconnu ou ignoré : %s\n", line);
             }
         
@@ -72,41 +93,60 @@ static gpointer listen_for_messages(gpointer user_data) {
 return NULL;
 }
 
+static void on_create_channel_response(GtkDialog *dialog, int response_id, gpointer user_data) {
+    ChatContext *ctx = (ChatContext *)user_data;
 
+    GtkWidget *entry = g_object_get_data(G_OBJECT(dialog), "entry");
+    GtkWidget *check_button = g_object_get_data(G_OBJECT(dialog), "check");
 
-static void load_messages(ChatContext *ctx, const char *channel_name) {
+    if (response_id == GTK_RESPONSE_OK) {
+        const char *channel_name = gtk_editable_get_text(GTK_EDITABLE(entry));
+        gboolean is_private = gtk_check_button_get_active(GTK_CHECK_BUTTON(check_button));
 
-    env_load("..", false);
-
-    PGconn *conn = PQconnectdb("");
-    if (PQstatus(conn) != CONNECTION_OK) {
-        printf("Erreur connexion DB\n");
-        PQfinish(conn);
-        return;
+        if (strlen(channel_name) > 0) {
+            char buffer[512];
+            snprintf(buffer, sizeof(buffer), "CREATE_CHAN:%s|%s|%d", channel_name, ctx->ctx->username, is_private ? 1 : 0);
+            send(ctx->ctx->client_fd, buffer, strlen(buffer), 0);
+        }
     }
 
-    char query[512];
-    snprintf(query, sizeof(query),
-        "SELECT sender, content FROM messages WHERE channel_id = (SELECT id FROM channels WHERE name = '%s')",
-        channel_name);
-
-    PGresult *res = PQexec(conn, query);
-    GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ctx->chat_display));
-    gtk_text_buffer_set_text(buffer, "", -1);
-
-    int n = PQntuples(res);
-    for (int i = 0; i < n; i++) {
-        const char *sender = PQgetvalue(res, i, 0);
-        const char *content = PQgetvalue(res, i, 1);
-
-        char message[512];
-        snprintf(message, sizeof(message), "%s: %s\n", sender, content);
-        gtk_text_buffer_insert_at_cursor(buffer, message, -1);
-    }
-
-    PQclear(res);
-    PQfinish(conn);
+    gtk_window_destroy(GTK_WINDOW(dialog));
 }
+
+
+static void on_create_channel(GtkButton *button, gpointer user_data) {
+    ChatContext *ctx = (ChatContext *)user_data;
+
+    GtkWidget *dialog = gtk_dialog_new_with_buttons(
+        "Créer un canal",
+        GTK_WINDOW(gtk_widget_get_root(GTK_WIDGET(button))),
+        GTK_DIALOG_MODAL,
+        "_Créer", GTK_RESPONSE_OK,
+        "_Annuler", GTK_RESPONSE_CANCEL,
+        NULL
+    );
+
+    GtkWidget *content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_append(GTK_BOX(content_area), vbox);
+
+    GtkWidget *entry = gtk_entry_new();
+    gtk_entry_set_placeholder_text(GTK_ENTRY(entry), "Nom du canal");
+    gtk_box_append(GTK_BOX(vbox), entry);
+
+    GtkWidget *check_button = gtk_check_button_new_with_label("Privé");
+    gtk_box_append(GTK_BOX(vbox), check_button);
+
+    g_object_set_data(G_OBJECT(dialog), "entry", entry);
+    g_object_set_data(G_OBJECT(dialog), "check", check_button);
+
+    g_signal_connect(dialog, "response", G_CALLBACK(on_create_channel_response), ctx);
+
+    gtk_window_present(GTK_WINDOW(dialog));
+
+}
+
+
 
 static void on_channel_selected(GtkListBox *box, GtkListBoxRow *row, gpointer user_data) {
     if (row != NULL) {
@@ -167,6 +207,7 @@ static void load_channels(ChatContext *ctx) {
         GtkWidget *label = gtk_label_new(token);
         gtk_list_box_append(GTK_LIST_BOX(ctx->channel_list), label);
         token = strtok_r(NULL, "|", &saveptr);
+        gtk_widget_show(label); 
     }
 }
 
@@ -235,6 +276,9 @@ void show_chat_window(GtkApplication *app, GtkWindow *previous_window, AppContex
     GtkWidget *channel_list = gtk_list_box_new();
     gtk_box_append(GTK_BOX(vbox_left), channel_list);
 
+    GtkWidget *btn_create_channel = gtk_button_new_with_label("Créer un canal");
+    gtk_box_append(GTK_BOX(vbox_left), btn_create_channel);
+
     GtkWidget *chat_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_widget_set_vexpand(chat_box, TRUE);
     gtk_box_append(GTK_BOX(main_hbox), chat_box);
@@ -282,6 +326,8 @@ void show_chat_window(GtkApplication *app, GtkWindow *previous_window, AppContex
 
     
     g_signal_connect(channel_list, "row-selected", G_CALLBACK(on_channel_selected), ctx);
+    g_signal_connect(btn_create_channel, "clicked", G_CALLBACK(on_create_channel), ctx);
+    
     g_signal_connect(btn_send, "clicked", G_CALLBACK(on_send_message), ctx);
 
     g_signal_connect(window, "destroy", G_CALLBACK(g_free), ctx);

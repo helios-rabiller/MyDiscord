@@ -6,6 +6,7 @@
 #include <dotenv.h>
 #include <sys/socket.h> 
 #include <time.h>
+#include <glib.h>
 
 
 void querry_channel(char *buffer, int client_fd) {
@@ -62,6 +63,77 @@ void querry_channel(char *buffer, int client_fd) {
     PQfinish(conn);
 }
 
+void create_channel(char *buffer, int client_fd){
+    char *data = buffer + 12;
+    char *saveptr;
+
+    char *channel_name = strtok_r(data, "|", &saveptr);
+    char *username = strtok_r(NULL, "|", &saveptr);
+    char *private = strtok_r(NULL, "|", &saveptr);
+
+    if (channel_name) g_strchomp(channel_name);
+    if (username) g_strchomp(username);
+    if (private) g_strchomp(private);
+
+    if (!channel_name || strlen(channel_name) == 0 || channel_name[strlen(channel_name) - 1] == ' ') {
+        printf("Nom de canal invalide (vide ou se termine par un espace).\n");
+        send(client_fd, "CREATE_CHAN:0", strlen("CREATE_CHAN:0"), 0);
+        return;
+    }
+
+    bool is_private = (strcmp(private, "1") == 0);
+
+    printf("serveur : create_chant : '%s' '%d' '%s' '%s'| ",channel_name, is_private, username, username);
+    env_load("..", false);
+
+    PGconn *conn = PQconnectdb("");
+    if (PQstatus(conn) != CONNECTION_OK) {
+        printf("Erreur connexion DB\n");
+        PQfinish(conn);
+        return;
+    }
+
+    const char *query = 
+    "WITH new_channel AS ( "
+    "INSERT INTO channels (name,is_private ,created_by) "
+    "VALUES ($1,$2,(SELECT id FROM users WHERE username = $3)) "
+    "RETURNING id) "
+    "INSERT INTO user_roles (user_id,role_id,channel_id) "
+    "VALUES ((SELECT id FROM users WHERE username = $4), "
+            "(SELECT id FROM roles WHERE name = 'admin'), "
+            "(SELECT id FROM new_channel)); "
+            ;
+
+    char is_private_str[2];
+    snprintf(is_private_str, sizeof(is_private_str), "%d", is_private);
+    const char *params[4] = {channel_name, is_private_str, username, username};
+
+    PGresult *res = PQexecParams(conn,query,4,NULL, params, NULL, NULL, 0);
+
+    if (PQresultStatus(res) == PGRES_COMMAND_OK) {
+        printf("canal '%s' envoyé sur bdd\n", channel_name);
+    } else {
+        printf("Erreur lors de l'envoi du message : %s\n", PQerrorMessage(conn));
+    }
+
+    PQclear(res);
+    PQfinish(conn);
+
+    char notif[512];
+    snprintf(notif, sizeof(notif), "NEWCHAN:%s\n", channel_name);
+    
+    pthread_mutex_lock(&clients_mutex);
+    
+    for (int i = 0; i < MAX_CLIENTS; i++) {
+        if (clients[i] != -1) {
+            send(clients[i], notif, strlen(notif), 0);
+        }
+    }
+    
+    pthread_mutex_unlock(&clients_mutex);
+    
+
+}
 
 void querry_message(char *buffer, int client_fd){
 

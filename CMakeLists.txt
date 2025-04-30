@@ -25,12 +25,14 @@ add_executable(app
     src/dotenv.c
 )
 
+target_include_directories(app PRIVATE ${GTK_INCLUDE_DIRS})
 target_link_libraries(app
     ${GTK_LIBRARIES}
     pq
     dotenv
     pthread
 )
+
 
 # Serveur (application console)
 add_executable(server
@@ -44,4 +46,5 @@ target_link_libraries(server
     pq
     dotenv
     pthread
+    glib-2.0
 )
