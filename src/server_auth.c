@@ -220,7 +220,9 @@ void connect_auth(char *buffer, int client_fd){
         send(client_fd, "CONN:0", strlen("CONN:0"), 0);
     } else if (PQntuples(res) == 1) {
         printf("Connexion réussie pour %s\n", username);
-
+        
+        const char *user_id_str = PQgetvalue(res, 0, 0);
+        int user_id = atoi(user_id_str);
 
         PGresult *update = PQexecParams(conn,
             "UPDATE users SET status = 'online' WHERE username = $1",
@@ -233,6 +235,20 @@ void connect_auth(char *buffer, int client_fd){
                 PQfinish(conn);
                 return;
             }
+
+            pthread_mutex_lock(&clients_mutex);
+
+            for (int i = 0; i < MAX_CLIENTS; i++) {
+                if (clients[i] == client_fd) {
+                    if (client_usernames[i] != NULL) free(client_usernames[i]);
+                    client_usernames[i] = strdup(username); 
+                    client_user_ids[i] = user_id; 
+                    break;
+                }
+            }
+            
+            pthread_mutex_unlock(&clients_mutex);
+            
 
             PQclear(update);
             send(client_fd, "CONN:1", strlen("CONN:1"), 0);
