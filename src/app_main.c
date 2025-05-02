@@ -1,11 +1,11 @@
 #include <gtk/gtk.h>
-#include <stdio.h>              // printf(), perror() → affichage, messages d’erreur
-#include <stdlib.h>             // exit(), malloc() → fonctions système et mémoire
-#include <string.h>             // memset(), strlen(), strcpy(), strcmp(), strcspn()
-#include <unistd.h>             // close(), read(), write() → gestion des fichiers/sockets
-#include <arpa/inet.h>          // inet_pton(), htons(), sockaddr_in → IP / ports
-#include <sys/socket.h>         // socket(), connect(), bind(), listen(), accept(), send(), recv()
-#include <signal.h>             // signal(), SIGINT → gestion des signaux système (Ctrl+C, interruption)
+#include <stdio.h>              
+#include <stdlib.h>             
+#include <string.h>             
+#include <unistd.h>             
+#include <arpa/inet.h>          
+#include <sys/socket.h>         
+#include <signal.h>             
 
 
 #include "app_auth.h"

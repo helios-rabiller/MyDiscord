@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <dotenv.h>
 #include <sys/socket.h>
-
+#include <glib.h>
 
 int check_email(char *email, PGconn *conn){
 
@@ -105,14 +105,19 @@ void create_user(char *buffer, int client_fd){
     char *username = strtok_r(data, "|", &saveptr);
     char *email = strtok_r(NULL, "|", &saveptr);
     char *password = strtok_r(NULL, "|", &saveptr);
+    
+    if (username) g_strchomp(username);
+    if (email) g_strchomp(email);
+    if (password) g_strchomp(password);
 
-    if (!username || strlen(username) == 0 ||
-    !email || strlen(email) == 0 ||
-    !password || strlen(password) == 0) {
-
-    printf("Requête invalide : champs vides.\n");
-    send(client_fd, "AUTH:0", strlen("AUTH:0"), 0);
-    return;
+    if (
+        !username || strlen(username) == 0 || username[strlen(username) - 1] == ' ' ||
+        !email    || strlen(email) == 0    || email[strlen(email) - 1]    == ' ' ||
+        !password || strlen(password) == 0 || password[strlen(password) - 1] == ' '
+    ) {
+        printf("Requête invalide : champs vides.\n");
+        send(client_fd, "AUTH:0", strlen("AUTH:0"), 0);
+        return;
     }
 
     env_load("..", false);
@@ -215,7 +220,9 @@ void connect_auth(char *buffer, int client_fd){
         send(client_fd, "CONN:0", strlen("CONN:0"), 0);
     } else if (PQntuples(res) == 1) {
         printf("Connexion réussie pour %s\n", username);
-
+        
+        const char *user_id_str = PQgetvalue(res, 0, 0);
+        int user_id = atoi(user_id_str);
 
         PGresult *update = PQexecParams(conn,
             "UPDATE users SET status = 'online' WHERE username = $1",
@@ -228,6 +235,20 @@ void connect_auth(char *buffer, int client_fd){
                 PQfinish(conn);
                 return;
             }
+
+            pthread_mutex_lock(&clients_mutex);
+
+            for (int i = 0; i < MAX_CLIENTS; i++) {
+                if (clients[i] == client_fd) {
+                    if (client_usernames[i] != NULL) free(client_usernames[i]);
+                    client_usernames[i] = strdup(username); 
+                    client_user_ids[i] = user_id; 
+                    break;
+                }
+            }
+            
+            pthread_mutex_unlock(&clients_mutex);
+            
 
             PQclear(update);
             send(client_fd, "CONN:1", strlen("CONN:1"), 0);

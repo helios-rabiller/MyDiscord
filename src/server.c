@@ -16,13 +16,16 @@
 #define PORT 8080
 #define MAX_CLIENTS 100
 
+
 void create_user(char *buffer, int client_fd);
 void connect_auth(char *buffer, int client_fd);
 
 int server_fd; 
 
 
-int clients[MAX_CLIENTS];               
+int clients[MAX_CLIENTS];           
+char *client_usernames[MAX_CLIENTS] = {0};
+int client_user_ids[MAX_CLIENTS] = {0}; 
 int nb_clients = 0;                     
 pthread_mutex_t clients_mutex = PTHREAD_MUTEX_INITIALIZER; 
 
@@ -91,21 +94,42 @@ void *handle_client(void *arg) {
         else if (strncmp(buffer, "HIST:", 5) == 0) {
             send_channel_history(buffer, client_fd);
             continue;
-        }
+        } 
+        else if (strncmp(buffer, "CREATE_CHAN:", 12) == 0) {
+            create_channel(buffer, client_fd);
+            continue;
+        } 
+        else if (strncmp(buffer, "ADD_MEMBER:", 11) == 0) {
+            add_member(buffer, client_fd);
+            continue;
+        } 
+        else if (strncmp(buffer, "REMOVE_MEMBER:", 14) == 0) {
+            remove_member(buffer, client_fd);
+            continue;
+        } 
+
 
          else {    
                 printf("error server handle_client");
         }
     }
 
+
+    
     close(client_fd);  
 
     pthread_mutex_lock(&clients_mutex);
 
     for (int i = 0; i < MAX_CLIENTS; i++) {
         if (clients[i] == client_fd) {
+            if (client_usernames[i]) {
+                free(client_usernames[i]);
+                client_usernames[i] = NULL;
+            }
+            client_user_ids[i] = 0;
             clients[i] = -1;
             nb_clients--;
+            
             break;
         }
     }
