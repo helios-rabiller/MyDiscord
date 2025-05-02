@@ -1,3 +1,14 @@
+# Fichiers sensibles
 .env
-build
-.vscode
+
+# Dossiers à ignorer
+/build/
+/.vscode/
+
+# Fichiers de build
+*.o
+*.d
+*.so
+*.a
+*.exe
+*.out
