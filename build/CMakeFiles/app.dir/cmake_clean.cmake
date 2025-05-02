@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/app.dir/src/alert_dialog_utils.c.o"
+  "CMakeFiles/app.dir/src/alert_dialog_utils.c.o.d"
   "CMakeFiles/app.dir/src/app_auth.c.o"
   "CMakeFiles/app.dir/src/app_auth.c.o.d"
   "CMakeFiles/app.dir/src/app_chat.c.o"

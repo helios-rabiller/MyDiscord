@@ -142,6 +142,30 @@ server/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/build
 .PHONY : server/fast
 
+src/alert_dialog_utils.o: src/alert_dialog_utils.c.o
+.PHONY : src/alert_dialog_utils.o
+
+# target to build an object file
+src/alert_dialog_utils.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/alert_dialog_utils.c.o
+.PHONY : src/alert_dialog_utils.c.o
+
+src/alert_dialog_utils.i: src/alert_dialog_utils.c.i
+.PHONY : src/alert_dialog_utils.i
+
+# target to preprocess a source file
+src/alert_dialog_utils.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/alert_dialog_utils.c.i
+.PHONY : src/alert_dialog_utils.c.i
+
+src/alert_dialog_utils.s: src/alert_dialog_utils.c.s
+.PHONY : src/alert_dialog_utils.s
+
+# target to generate assembly for a file
+src/alert_dialog_utils.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/app.dir/build.make CMakeFiles/app.dir/src/alert_dialog_utils.c.s
+.PHONY : src/alert_dialog_utils.c.s
+
 src/app_auth.o: src/app_auth.c.o
 .PHONY : src/app_auth.o
 
@@ -323,6 +347,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... app"
 	@echo "... server"
+	@echo "... src/alert_dialog_utils.o"
+	@echo "... src/alert_dialog_utils.i"
+	@echo "... src/alert_dialog_utils.s"
 	@echo "... src/app_auth.o"
 	@echo "... src/app_auth.i"
 	@echo "... src/app_auth.s"
