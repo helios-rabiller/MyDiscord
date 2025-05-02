@@ -6,6 +6,7 @@
 #include "app_chat.h"
 #include "app_context.h"
 #include <sys/socket.h> 
+#include "alert_dialog_utils.h"
 
 #include <dotenv.h>
 
@@ -23,7 +24,7 @@ typedef struct {
     char selected_channel[128];
 } ChatContext;
 
-gboolean alert_create_channel(gpointer data) {
+gboolean alert_create_channel(gpointer data, const char *message) {
     ChatContext *ctx = (ChatContext *)data;
 
     GtkWidget *dialog = gtk_dialog_new();
@@ -32,7 +33,7 @@ gboolean alert_create_channel(gpointer data) {
     gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(gtk_widget_get_root(ctx->chat_label)));
 
     GtkWidget *content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-    GtkWidget *label = gtk_label_new("Ce canal existe déjà. Veuillez choisir un autre nom.");
+    GtkWidget *label = gtk_label_new(message);
     gtk_box_append(GTK_BOX(content_area), label);
 
     GtkWidget *ok_button = gtk_button_new_with_label("OK");
@@ -80,7 +81,6 @@ static gpointer listen_for_messages(gpointer user_data) {
         
                     char formatted[1024];
                     snprintf(formatted, sizeof(formatted), "[%s] %s : %s\n", timestamp, username, message);
-                    printf("formatted message : '%s'",formatted);
                     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ctx->chat_display));
                     gtk_text_buffer_insert_at_cursor(buffer, formatted, -1);
                 }
@@ -109,10 +109,42 @@ static gpointer listen_for_messages(gpointer user_data) {
                     gtk_widget_show(row);
                 }
             }
-            else if (g_strcmp0(line, "CREATE_CHAN:EXISTS") == 0) {
-                g_idle_add(alert_create_channel, ctx);
+
+            else if (g_str_has_prefix(line, "ADD_MEMBER:OK")) {
+                const char *channel_name = line + strlen("ADD_MEMBER:OK");
+            
+                gboolean exists = FALSE;
+                for (GtkWidget *child = gtk_widget_get_first_child(ctx->channel_list);
+                     child != NULL;
+                     child = gtk_widget_get_next_sibling(child)) {
+            
+                    const char *existing_name = g_object_get_data(G_OBJECT(child), "channel_name");
+                    if (existing_name && strcmp(existing_name, channel_name) == 0) {
+                        exists = TRUE;
+                        break;
+                    }
+                }
+            
+                if (!exists) {
+                    GtkWidget *label = gtk_label_new(channel_name);
+                    GtkWidget *row = gtk_list_box_row_new();
+                    gtk_list_box_row_set_child(GTK_LIST_BOX_ROW(row), label);
+                    g_object_set_data(G_OBJECT(row), "channel_name", g_strdup(channel_name));
+                    gtk_list_box_append(GTK_LIST_BOX(ctx->channel_list), row);
+                    gtk_widget_show(row);
+                }
+            }
+            
+            else if (g_strcmp0(line, "ADD_MEMBER:0") == 0) {
+                show_alert_dialog(ctx->chat_label, "Entrée invalide");
+            }
+            else if (g_strcmp0(line, "ADD_MEMBER:UNKNOWN") == 0) {
+                show_alert_dialog(ctx->chat_label, "Utilisateur inconnu");
             }
 
+            else if (g_strcmp0(line, "CREATE_CHAN:EXISTS") == 0) {
+                show_alert_dialog(ctx->chat_label, "Ce canal existe déjà, merci d'en créer un autre");
+            }
 
             else {
                 g_print("Inconnu ou ignoré : %s\n", line);

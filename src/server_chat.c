@@ -332,7 +332,7 @@ void add_member(char *buffer, int client_fd) {
     PQclear(res);
 
     char notif[512];
-    snprintf(notif, sizeof(notif), "ADD_MEMBER:%s\n", channel_name);
+    snprintf(notif, sizeof(notif), "ADD_MEMBER:OK|%s\n", channel_name);
 
     int user_id = atoi(PQgetvalue(check_user, 0, 0));
     PQclear(check_user);
@@ -346,14 +346,9 @@ void add_member(char *buffer, int client_fd) {
     }
     pthread_mutex_unlock(&clients_mutex);
     
-    send(client_fd, "ADD_MEMBER:OK", strlen("ADD_MEMBER:OK"), 0);
-
     PQfinish(conn);
 }
 
-
 void remove_member(char *buffer, int client_fd) {
-
-
 
 }

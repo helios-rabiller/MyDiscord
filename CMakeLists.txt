@@ -23,6 +23,7 @@ add_executable(app
     src/app_auth.c
     src/app_chat.c
     src/dotenv.c
+    src/alert_dialog_utils.c
 )
 
 target_include_directories(app PRIVATE ${GTK_INCLUDE_DIRS})
