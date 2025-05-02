@@ -1,4 +1,0 @@
-/home/helios/laplateforme/Projets/MyDiscord/build/CMakeFiles/app.dir
-/home/helios/laplateforme/Projets/MyDiscord/build/CMakeFiles/server.dir
-/home/helios/laplateforme/Projets/MyDiscord/build/CMakeFiles/edit_cache.dir
-/home/helios/laplateforme/Projets/MyDiscord/build/CMakeFiles/rebuild_cache.dir

@@ -1,1 +1,0 @@
-/usr/bin/cc CMakeFiles/app.dir/src/app_main.c.o CMakeFiles/app.dir/src/app_auth.c.o CMakeFiles/app.dir/src/app_chat.c.o CMakeFiles/app.dir/src/dotenv.c.o -o app  -lgtk-4 -lpangocairo-1.0 -lpango-1.0 -lharfbuzz -lgdk_pixbuf-2.0 -lcairo-gobject -lcairo -lgraphene-1.0 -lgio-2.0 -lgobject-2.0 -lglib-2.0 -lpq -ldotenv -lpthread 
