@@ -1,5 +1,5 @@
 CMakeFiles/app.dir/src/app_main.c.o: \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/app_main.c \
+ /home/helios/laplateforme/Projets/MyDiscord/src/app_main.c \
  /usr/include/stdc-predef.h /usr/include/gtk-4.0/gtk/gtk.h \
  /usr/include/gtk-4.0/gtk/css/gtkcss.h /usr/include/glib-2.0/glib.h \
  /usr/include/glib-2.0/glib/galloca.h /usr/include/glib-2.0/glib/gtypes.h \
@@ -763,6 +763,6 @@ CMakeFiles/app.dir/src/app_main.c.o: \
  /usr/include/asm-generic/sockios.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
  /usr/include/x86_64-linux-gnu/bits/in.h \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/app_auth.h \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/app_context.h \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/app_context.h
+ /home/helios/laplateforme/Projets/MyDiscord/include/app_auth.h \
+ /home/helios/laplateforme/Projets/MyDiscord/include/app_context.h \
+ /home/helios/laplateforme/Projets/MyDiscord/include/app_context.h

@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/lucas/laplateforme/S12_Mydiscord/MyDiscord
+CMAKE_SOURCE_DIR = /home/helios/laplateforme/Projets/MyDiscord
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build
+CMAKE_BINARY_DIR = /home/helios/laplateforme/Projets/MyDiscord/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/server.dir/depend.make
@@ -72,58 +72,58 @@ include CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/src/server.c.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/src/server.c.o: ../src/server.c
 CMakeFiles/server.dir/src/server.c.o: CMakeFiles/server.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/server.dir/src/server.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/server.dir/src/server.c.o -MF CMakeFiles/server.dir/src/server.c.o.d -o CMakeFiles/server.dir/src/server.c.o -c /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/server.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/helios/laplateforme/Projets/MyDiscord/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/server.dir/src/server.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/server.dir/src/server.c.o -MF CMakeFiles/server.dir/src/server.c.o.d -o CMakeFiles/server.dir/src/server.c.o -c /home/helios/laplateforme/Projets/MyDiscord/src/server.c
 
 CMakeFiles/server.dir/src/server.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/server.dir/src/server.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/server.c > CMakeFiles/server.dir/src/server.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/helios/laplateforme/Projets/MyDiscord/src/server.c > CMakeFiles/server.dir/src/server.c.i
 
 CMakeFiles/server.dir/src/server.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/server.dir/src/server.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/server.c -o CMakeFiles/server.dir/src/server.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/helios/laplateforme/Projets/MyDiscord/src/server.c -o CMakeFiles/server.dir/src/server.c.s
 
 CMakeFiles/server.dir/src/server_auth.c.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/src/server_auth.c.o: ../src/server_auth.c
 CMakeFiles/server.dir/src/server_auth.c.o: CMakeFiles/server.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/server.dir/src/server_auth.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/server.dir/src/server_auth.c.o -MF CMakeFiles/server.dir/src/server_auth.c.o.d -o CMakeFiles/server.dir/src/server_auth.c.o -c /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/server_auth.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/helios/laplateforme/Projets/MyDiscord/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/server.dir/src/server_auth.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/server.dir/src/server_auth.c.o -MF CMakeFiles/server.dir/src/server_auth.c.o.d -o CMakeFiles/server.dir/src/server_auth.c.o -c /home/helios/laplateforme/Projets/MyDiscord/src/server_auth.c
 
 CMakeFiles/server.dir/src/server_auth.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/server.dir/src/server_auth.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/server_auth.c > CMakeFiles/server.dir/src/server_auth.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/helios/laplateforme/Projets/MyDiscord/src/server_auth.c > CMakeFiles/server.dir/src/server_auth.c.i
 
 CMakeFiles/server.dir/src/server_auth.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/server.dir/src/server_auth.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/server_auth.c -o CMakeFiles/server.dir/src/server_auth.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/helios/laplateforme/Projets/MyDiscord/src/server_auth.c -o CMakeFiles/server.dir/src/server_auth.c.s
 
 CMakeFiles/server.dir/src/server_chat.c.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/src/server_chat.c.o: ../src/server_chat.c
 CMakeFiles/server.dir/src/server_chat.c.o: CMakeFiles/server.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/server.dir/src/server_chat.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/server.dir/src/server_chat.c.o -MF CMakeFiles/server.dir/src/server_chat.c.o.d -o CMakeFiles/server.dir/src/server_chat.c.o -c /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/server_chat.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/helios/laplateforme/Projets/MyDiscord/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/server.dir/src/server_chat.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/server.dir/src/server_chat.c.o -MF CMakeFiles/server.dir/src/server_chat.c.o.d -o CMakeFiles/server.dir/src/server_chat.c.o -c /home/helios/laplateforme/Projets/MyDiscord/src/server_chat.c
 
 CMakeFiles/server.dir/src/server_chat.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/server.dir/src/server_chat.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/server_chat.c > CMakeFiles/server.dir/src/server_chat.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/helios/laplateforme/Projets/MyDiscord/src/server_chat.c > CMakeFiles/server.dir/src/server_chat.c.i
 
 CMakeFiles/server.dir/src/server_chat.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/server.dir/src/server_chat.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/server_chat.c -o CMakeFiles/server.dir/src/server_chat.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/helios/laplateforme/Projets/MyDiscord/src/server_chat.c -o CMakeFiles/server.dir/src/server_chat.c.s
 
 CMakeFiles/server.dir/src/dotenv.c.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/src/dotenv.c.o: ../src/dotenv.c
 CMakeFiles/server.dir/src/dotenv.c.o: CMakeFiles/server.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/server.dir/src/dotenv.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/server.dir/src/dotenv.c.o -MF CMakeFiles/server.dir/src/dotenv.c.o.d -o CMakeFiles/server.dir/src/dotenv.c.o -c /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/dotenv.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/helios/laplateforme/Projets/MyDiscord/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/server.dir/src/dotenv.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/server.dir/src/dotenv.c.o -MF CMakeFiles/server.dir/src/dotenv.c.o.d -o CMakeFiles/server.dir/src/dotenv.c.o -c /home/helios/laplateforme/Projets/MyDiscord/src/dotenv.c
 
 CMakeFiles/server.dir/src/dotenv.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/server.dir/src/dotenv.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/dotenv.c > CMakeFiles/server.dir/src/dotenv.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/helios/laplateforme/Projets/MyDiscord/src/dotenv.c > CMakeFiles/server.dir/src/dotenv.c.i
 
 CMakeFiles/server.dir/src/dotenv.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/server.dir/src/dotenv.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/dotenv.c -o CMakeFiles/server.dir/src/dotenv.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/helios/laplateforme/Projets/MyDiscord/src/dotenv.c -o CMakeFiles/server.dir/src/dotenv.c.s
 
 # Object files for target server
 server_OBJECTS = \
@@ -141,7 +141,7 @@ server: CMakeFiles/server.dir/src/server_chat.c.o
 server: CMakeFiles/server.dir/src/dotenv.c.o
 server: CMakeFiles/server.dir/build.make
 server: CMakeFiles/server.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking C executable server"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/helios/laplateforme/Projets/MyDiscord/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking C executable server"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/server.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -153,6 +153,6 @@ CMakeFiles/server.dir/clean:
 .PHONY : CMakeFiles/server.dir/clean
 
 CMakeFiles/server.dir/depend:
-	cd /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/lucas/laplateforme/S12_Mydiscord/MyDiscord /home/lucas/laplateforme/S12_Mydiscord/MyDiscord /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/build/CMakeFiles/server.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/helios/laplateforme/Projets/MyDiscord/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/helios/laplateforme/Projets/MyDiscord /home/helios/laplateforme/Projets/MyDiscord /home/helios/laplateforme/Projets/MyDiscord/build /home/helios/laplateforme/Projets/MyDiscord/build /home/helios/laplateforme/Projets/MyDiscord/build/CMakeFiles/server.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/server.dir/depend
 

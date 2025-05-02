@@ -1,7 +1,7 @@
 CMakeFiles/server.dir/src/server_chat.c.o: \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/server_chat.c \
+ /home/helios/laplateforme/Projets/MyDiscord/src/server_chat.c \
  /usr/include/stdc-predef.h \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/server_chat.h \
+ /home/helios/laplateforme/Projets/MyDiscord/include/server_chat.h \
  /usr/include/pthread.h /usr/include/features.h \
  /usr/include/features-time64.h \
  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
@@ -61,7 +61,7 @@ CMakeFiles/server.dir/src/server_chat.c.o: \
  /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
  /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
  /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/dotenv.h \
+ /home/helios/laplateforme/Projets/MyDiscord/include/dotenv.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h \
  /usr/include/x86_64-linux-gnu/sys/socket.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \

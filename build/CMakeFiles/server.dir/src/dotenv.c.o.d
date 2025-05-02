@@ -1,7 +1,7 @@
 CMakeFiles/server.dir/src/dotenv.c.o: \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/dotenv.c \
+ /home/helios/laplateforme/Projets/MyDiscord/src/dotenv.c \
  /usr/include/stdc-predef.h \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/dotenv.h \
+ /home/helios/laplateforme/Projets/MyDiscord/include/dotenv.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h /usr/include/stdio.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \

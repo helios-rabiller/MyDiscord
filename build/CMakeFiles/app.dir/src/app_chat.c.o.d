@@ -1,5 +1,5 @@
 CMakeFiles/app.dir/src/app_chat.c.o: \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/app_chat.c \
+ /home/helios/laplateforme/Projets/MyDiscord/src/app_chat.c \
  /usr/include/stdc-predef.h /usr/include/signal.h /usr/include/features.h \
  /usr/include/features-time64.h \
  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
@@ -750,9 +750,9 @@ CMakeFiles/app.dir/src/app_chat.c.o: \
  /usr/include/postgresql/libpq-fe.h \
  /usr/include/postgresql/postgres_ext.h \
  /usr/include/postgresql/pg_config_ext.h \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/app_chat.h \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/app_context.h \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/app_context.h \
+ /home/helios/laplateforme/Projets/MyDiscord/include/app_chat.h \
+ /home/helios/laplateforme/Projets/MyDiscord/include/app_context.h \
+ /home/helios/laplateforme/Projets/MyDiscord/include/app_context.h \
  /usr/include/x86_64-linux-gnu/sys/socket.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
  /usr/include/x86_64-linux-gnu/bits/socket.h \
@@ -769,4 +769,4 @@ CMakeFiles/app.dir/src/app_chat.c.o: \
  /usr/include/x86_64-linux-gnu/asm/sockios.h \
  /usr/include/asm-generic/sockios.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/dotenv.h
+ /home/helios/laplateforme/Projets/MyDiscord/include/dotenv.h

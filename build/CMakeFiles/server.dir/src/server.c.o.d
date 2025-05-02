@@ -1,5 +1,5 @@
 CMakeFiles/server.dir/src/server.c.o: \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/src/server.c \
+ /home/helios/laplateforme/Projets/MyDiscord/src/server.c \
  /usr/include/stdc-predef.h /usr/include/stdio.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -110,7 +110,7 @@ CMakeFiles/server.dir/src/server.c.o: \
  /usr/include/postgresql/libpq-fe.h \
  /usr/include/postgresql/postgres_ext.h \
  /usr/include/postgresql/pg_config_ext.h \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/dotenv.h \
+ /home/helios/laplateforme/Projets/MyDiscord/include/dotenv.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/server_auth.h \
- /home/lucas/laplateforme/S12_Mydiscord/MyDiscord/include/server_chat.h
+ /home/helios/laplateforme/Projets/MyDiscord/include/server_auth.h \
+ /home/helios/laplateforme/Projets/MyDiscord/include/server_chat.h
