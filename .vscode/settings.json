@@ -7,5 +7,6 @@
         "cstdlib": "c",
         "unistd.h": "c",
         "app_context.h": "c"
-    }
+    },
+    "cmake.sourceDirectory": "/wsl.localhost/Ubuntu-22.04/home/helios/laplateforme/Projets/MyDiscord"
 }
