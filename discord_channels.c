@@ -27,7 +27,7 @@ void fetch_messages(GtkWidget *box, const char *channel_id) {
     }
 
     // Modifiez la requête SQL pour filtrer par channel_id
-    gchar *query = g_strdup_printf("SELECT content, timestamp FROM messages WHERE channel_id = '%s' ORDER BY timestamp ASC", channel_id);
+    gchar *query = g_strdup_printf("SELECT content, timestamp FROM messages WHERE channel_id = '3' ORDER BY timestamp ASC", channel_id);
     PGresult *res = PQexec(conn, query);
     g_free(query); // Libérer la mémoire allouée pour la requête
 

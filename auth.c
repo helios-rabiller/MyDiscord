@@ -1,5 +1,7 @@
 #include <gtk/gtk.h>
 #include <libpq-fe.h>
+#include <winsock2.h>
+#pragma comment(lib, "ws2_32.lib")
 
 GtkWidget *entry_username;
 GtkWidget *entry_password;
@@ -38,28 +40,59 @@ void on_login_clicked(GtkButton *button, gpointer user_data) {
     const char *username = gtk_editable_get_text(GTK_EDITABLE(entry_username));
     const char *password = gtk_editable_get_text(GTK_EDITABLE(entry_password));
 
-    PGconn *conn = PQconnectdb("dbname=MyDiscord user=postgres password= ");
-    if (PQstatus(conn) != CONNECTION_OK) {
-        show_alert(window, "Connexion à la base de données échouée.");
-        PQfinish(conn);
+    WSADATA wsa;
+    if (WSAStartup(MAKEWORD(2,2), &wsa) != 0) {
+        show_alert(window, "Erreur Winsock lors de l'initialisation.");
         return;
     }
 
-    char query[512];
-    snprintf(query, sizeof(query),
-             "SELECT * FROM users WHERE username='%s' AND password_hash='%s'",
-             username, password);
-
-    PGresult *res = PQexec(conn, query);
-
-    if (PQntuples(res) == 1) {
-        show_alert(window, "Connexion réussie !");
-    } else {
-        show_alert(window, "Nom d'utilisateur ou mot de passe incorrect.");
+    SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock == INVALID_SOCKET) {
+        show_alert(window, "Erreur de création de la socket.");
+        WSACleanup();
+        return;
     }
 
-    PQclear(res);
-    PQfinish(conn);
+    struct sockaddr_in server;
+    server.sin_addr.s_addr = inet_addr("127.0.0.1");
+    server.sin_family = AF_INET;
+    server.sin_port = htons(8080);
+
+    if (connect(sock, (struct sockaddr *)&server, sizeof(server)) < 0) {
+        show_alert(window, "Impossible de se connecter au serveur.");
+        closesocket(sock);
+        WSACleanup();
+        return;
+    }
+
+    char message[256];
+    snprintf(message, sizeof(message), "LOGIN:%s %s", username, password);
+    if (send(sock, message, strlen(message), 0) == SOCKET_ERROR) {
+        show_alert(window, "Erreur d'envoi du message.");
+        closesocket(sock);
+        WSACleanup();
+        return;
+    }
+
+    char response[64] = {0};
+    int recv_len = recv(sock, response, sizeof(response) - 1, 0);
+    if (recv_len == SOCKET_ERROR) {
+        show_alert(window, "Erreur de réception de la réponse du serveur.");
+        closesocket(sock);
+        WSACleanup();
+        return;
+    }
+
+    if (strcmp(response, "SUCCESS") == 0) {
+        show_alert(window, "Connexion réussie !");
+    } else if (strcmp(response, "FAILURE") == 0) {
+        show_alert(window, "Nom d'utilisateur ou mot de passe incorrect.");
+    } else {
+        show_alert(window, "Erreur inconnue.");
+    }
+
+    closesocket(sock);
+    WSACleanup();
 }
 
 void on_register_clicked(GtkButton *button, gpointer user_data) {
@@ -68,7 +101,7 @@ void on_register_clicked(GtkButton *button, gpointer user_data) {
     const char *email = gtk_editable_get_text(GTK_EDITABLE(entry_email));
     const char *password = gtk_editable_get_text(GTK_EDITABLE(entry_password));
 
-    PGconn *conn = PQconnectdb("dbname=MyDiscord user=postgres password= ");
+    PGconn *conn = PQconnectdb("dbname=MyDiscord user=postgres password=m");
     if (PQstatus(conn) != CONNECTION_OK) {
         show_alert(window, "Connexion à la base de données échouée.");
         PQfinish(conn);
@@ -81,11 +114,10 @@ void on_register_clicked(GtkButton *button, gpointer user_data) {
              username, email, password);
 
     PGresult *res = PQexec(conn, query);
-
-    if (PQresultStatus(res) == PGRES_COMMAND_OK) {
-        show_alert(window, "Inscription réussie !");
-    } else {
+    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
         show_alert(window, "Erreur lors de l'inscription. L'email est peut-être déjà utilisé.");
+    } else {
+        show_alert(window, "Inscription réussie !");
     }
 
     PQclear(res);
@@ -134,7 +166,6 @@ static void activate(GtkApplication *app, gpointer user_data) {
 int main(int argc, char **argv) {
     GtkApplication *app = gtk_application_new("com.exemple.AuthApp", G_APPLICATION_DEFAULT_FLAGS);
     g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
-
     int status = g_application_run(G_APPLICATION(app), argc, argv);
     g_object_unref(app);
     return status;

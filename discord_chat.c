@@ -12,7 +12,7 @@ void fetch_messages(GtkWidget *box) {
     }
 
     // Exécution de la requête pour obtenir les messages
-    PGresult *res = PQexec(conn, "SELECT content, timestamp FROM messages ORDER BY timestamp ASC");
+    PGresult *res = PQexec(conn, "SELECT content, timestamp FROM messages where channel_id = '2' ORDER BY timestamp ASC");
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
         g_print("Erreur lors de l'exécution de la requête : %s\n", PQerrorMessage(conn));
         PQclear(res);
